@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Consent Form</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 30px auto; padding: 20px; background: #f5f7fa; }
+    .form-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; margin-bottom: 6px; font-weight: 600; color: #333; }
+    input, canvas { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+    canvas { height: 150px; background: #fff; touch-action: none; cursor: crosshair; }
+    .btn { padding: 12px 24px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; width: 100%; }
+    .btn:disabled { background: #a5d6a7; cursor: not-allowed; }
+    #status { margin-top: 12px; text-align: center; font-weight: 500; }
+    .clear-btn { background: #e0e0e0; color: #333; margin-top: 8px; padding: 8px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="form-card">
+    <h2>📝 Consent Form</h2>
+    <form id="consentForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="Enter your full name">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" required placeholder="e.g., +1 555 123 4567">
+      </div>
+      <div class="form-group">
+        <label>Signature</label>
+        <canvas id="sigCanvas"></canvas>
+        <button type="button" id="clearSig" class="clear-btn">Clear Signature</button>
+      </div>
+      <button type="submit" id="submitBtn" class="btn">Submit Consent</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('sigCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Set canvas resolution for crisp drawing
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      return { x, y };
+    }
+
+    ['mousedown', 'touchstart'].forEach(evt => 
+      canvas.addEventListener(evt, e => { e.preventDefault(); drawing = true; ctx.beginPath(); ctx.moveTo(getPos(e).x, getPos(e).y); })
+    );
+    ['mousemove', 'touchmove'].forEach(evt => 
+      canvas.addEventListener(evt, e => { e.preventDefault(); if (drawing) { ctx.lineTo(getPos(e).x, getPos(e).y); ctx.stroke(); } })
+    );
+    ['mouseup', 'mouseleave', 'touchend'].forEach(evt => 
+      canvas.addEventListener(evt, () => drawing = false)
+    );
+
+    document.getElementById('clearSig').addEventListener('click', () => 
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    );
+
+    document.getElementById('consentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const status = document.getElementById('status');
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      // Check if signature is empty
+      const blank = document.createElement('canvas');
+      blank.width = canvas.width; blank.height = canvas.height;
+      if (canvas.toDataURL() === blank.toDataURL()) {
+        status.textContent = '❌ Please draw your signature.';
+        status.style.color = '#d32f2f';
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = '⏳ Submitting...';
+      status.style.color = '#1976D2';
+
+      const formData = new URLSearchParams({
+        name,
+        phone,
+        signature: canvas.toDataURL('image/png')
+      });
+
+      try {
+        // 🔽 REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          status.textContent = '✅ Consent submitted successfully!';
+          status.style.color = '#2e7d32';
+          document.getElementById('consentForm').reset();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        } else {
+          throw new Error(data.message || 'Unknown error');
+        }
+      } catch (err) {
+        status.textContent = '❌ Submission failed. Please try again.';
+        status.style.color = '#d32f2f';
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
