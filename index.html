@@ -3,95 +3,459 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HAPPY Program - Participant Consent Form</title>
+  <title>Jobberman Ghana - HAPPY Program Consent</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <style>
-    :root { --primary: #2e7d32; --primary-dark: #1b5e20; --light: #f8f9fa; --border: #dee2e6; --text: #212529; --text-light: #6c757d; }
+    :root {
+      --royal-blue: #4F46E5;
+      --indigo-purple: #7C3AED;
+      --gradient: linear-gradient(135deg, var(--royal-blue), var(--indigo-purple));
+      --light: #F9FAFB;
+      --border: #E5E7EB;
+      --text: #111827;
+      --text-light: #6B7280;
+      --success: #10B981;
+      --error: #EF4444;
+    }
+    
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: var(--text); background: #f0f4f8; padding: 20px; }
-    .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden; }
-    .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 24px 30px; text-align: center; }
-    .header h1 { font-size: 1.5rem; margin-bottom: 8px; }
-    .header p { opacity: 0.95; font-size: 0.95rem; }
-    .content { padding: 25px 30px; }
-    .consent-text { background: var(--light); border-left: 4px solid var(--primary); padding: 18px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-size: 0.95rem; max-height: 300px; overflow-y: auto; line-height: 1.7; }
-    .consent-text h3 { margin: 15px 0 10px; color: var(--primary-dark); font-size: 1.1rem; }
-    .consent-text ul { padding-left: 20px; margin: 10px 0; }
-    .consent-text li { margin-bottom: 6px; }
-    .form-section { margin: 25px 0; }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 0.95rem; }
-    input[type="text"], input[type="tel"] { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border-color 0.2s; }
-    input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15); }
-    .signature-box { border: 2px dashed var(--border); border-radius: 10px; padding: 15px; background: #fafafa; margin-top: 8px; }
-    canvas { width: 100%; height: 180px; border: 1px solid var(--border); border-radius: 8px; background: white; touch-action: none; cursor: crosshair; display: block; }
-    .signature-hint { font-size: 0.85rem; color: var(--text-light); margin-top: 8px; text-align: center; }
-    .btn-row { display: flex; gap: 12px; margin-top: 12px; }
-    button { flex: 1; padding: 12px 16px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    #clearSig { background: #e9ecef; color: #495057; }
-    #clearSig:hover { background: #dee2e6; }
-    #submitBtn { background: var(--primary); color: white; }
-    #submitBtn:hover { background: var(--primary-dark); }
-    #submitBtn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
-    .consent-check { display: flex; align-items: flex-start; gap: 10px; margin: 20px 0; padding: 15px; background: #e8f5e9; border-radius: 8px; border: 1px solid #c8e6c9; }
-    .consent-check input { margin-top: 4px; width: 18px; height: 18px; }
-    .consent-check label { margin: 0; font-weight: 500; font-size: 0.95rem; line-height: 1.5; }
-    #status { padding: 14px; border-radius: 8px; margin: 20px 0; font-weight: 500; text-align: center; display: none; }
-    .status-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: block; }
-    .status-error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; display: block; }
-    .footer { text-align: center; padding: 20px 30px 30px; color: var(--text-light); font-size: 0.85rem; border-top: 1px solid var(--border); background: #fafafa; }
-    .footer a { color: var(--primary); text-decoration: none; }
-    @media (max-width: 600px) { .container { border-radius: 0; } .header { padding: 20px; } .content { padding: 20px; } .btn-row { flex-direction: column; } canvas { height: 150px; } }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+    
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    /* Header with Logo */
+    .header {
+      background: var(--gradient);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .logo-container {
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      background: white;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .header h2 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+    
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    
+    /* Language Selector */
+    .lang-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    
+    .lang-selector select {
+      padding: 8px 12px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    
+    .lang-selector select option {
+      background: var(--royal-blue);
+      color: white;
+    }
+    
+    /* Content */
+    .content {
+      padding: 30px;
+    }
+    
+    .intro-text {
+      background: var(--light);
+      border-left: 4px solid var(--royal-blue);
+      padding: 20px;
+      margin-bottom: 25px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    
+    /* Consent Text Box */
+    .consent-text {
+      background: #F3F4F6;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      max-height: 350px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    
+    .consent-text h3 {
+      color: var(--royal-blue);
+      margin: 18px 0 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    
+    .consent-text h3:first-child {
+      margin-top: 0;
+    }
+    
+    .consent-text ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    
+    .consent-text li {
+      margin-bottom: 6px;
+    }
+    
+    .consent-text a {
+      color: var(--royal-blue);
+      text-decoration: none;
+    }
+    
+    .consent-text a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: 22px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--royal-blue);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    
+    /* Signature Canvas */
+    .signature-box {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      background: #FAFAFA;
+    }
+    
+    canvas {
+      width: 100%;
+      height: 180px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      touch-action: none;
+      cursor: crosshair;
+      display: block;
+    }
+    
+    .signature-hint {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 8px;
+      text-align: center;
+    }
+    
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    #clearSig {
+      background: #E5E7EB;
+      color: #374151;
+    }
+    
+    #clearSig:hover {
+      background: #D1D5DB;
+    }
+    
+    #submitBtn {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+    
+    #submitBtn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5);
+    }
+    
+    #submitBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Consent Checkbox */
+    .consent-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 25px 0;
+      padding: 18px;
+      background: #EEF2FF;
+      border-radius: 10px;
+      border: 2px solid var(--royal-blue);
+    }
+    
+    .consent-check input {
+      margin-top: 4px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .consent-check label {
+      margin: 0;
+      font-weight: 500;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    
+    /* Status Messages */
+    #status {
+      padding: 16px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .status-success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      display: block;
+    }
+    
+    .status-error {
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+      display: block;
+    }
+    
+    /* Footer */
+    .footer {
+      background: var(--light);
+      border-top: 1px solid var(--border);
+      padding: 25px 30px 30px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .footer-contact {
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    
+    .footer-contact strong {
+      color: var(--royal-blue);
+    }
+    
+    .footer a {
+      color: var(--royal-blue);
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .footer-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 15px 0;
+    }
+    
+    .footer-bottom {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+    
+    /* Developer Signature */
+    .dev-signature {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      font-size: 0.6rem;
+      color: #9CA3AF;
+      font-weight: 400;
+      pointer-events: none;
+      user-select: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      .header h1 { font-size: 1.6rem; }
+      .header h2 { font-size: 1.2rem; }
+      .content { padding: 20px; }
+      .btn-row { flex-direction: column; }
+      canvas { height: 150px; }
+      .dev-signature { 
+        position: static; 
+        text-align: center; 
+        margin-top: 10px;
+        display: block;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <div class="header">
-      <h1>🌾 HAPPY Program</h1>
+      <div class="lang-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+          <option value="en">English</option>
+          <option value="tw">Twi</option>
+          <option value="ha">Hausa</option>
+          <option value="ga">Ga</option>
+        </select>
+      </div>
+      
+      <div class="logo-container">
+        <img src="icon-192.png" alt="Jobberman Ghana Logo" class="logo" onerror="this.style.display='none'">
+      </div>
+      
+      <h1>Jobberman Ghana</h1>
+      <h2>HAPPY Program</h2>
       <p>Participant Consent Form</p>
     </div>
+    
+    <!-- Content -->
     <div class="content">
-      <p><strong>Harnessing Agricultural Productivity and Prosperity for Youth (HAPPY)</strong> is committed to improving its programs and ensuring they have a positive impact on program participants. To achieve this, we collect and analyze data about program participants.</p>
-      <p>We value your privacy and are committed to protecting your personal data. This consent form explains how we collect, use, and share your personal information as part of the HAPPY Program. Please read this form carefully and sign to indicate your consent.</p>
+      <div class="intro-text">
+        <strong>Harnessing Agricultural Productivity and Prosperity for Youth (HAPPY)</strong> is committed to improving its programs and ensuring they have a positive impact on participants. We value your privacy and are committed to protecting your personal data.
+      </div>
       
-      <div class="consent-text">
+      <div class="consent-text" id="consentText">
         <h3>1. Purpose of Data Collection and Use</h3>
-        <p>We collect your personal data to analyze the progress of the Program, improve the Program, and learn from the data collected, including monitoring and evaluating the effectiveness of the Harnessing Agricultural Productivity and Prosperity for Youth program and to learn how to improve it for future participants.</p>
+        <p>We collect your personal data to analyze the progress of the Program, improve the Program, and learn from the data collected, including monitoring and evaluating the effectiveness of the Harnessing Agricultural Productivity and Prosperity for Youth program.</p>
+        
         <h3>2. What Data Do We Collect?</h3>
         <p>We may collect some or all of the following information about you:</p>
         <ul>
           <li>Name, age (date of birth), and gender</li>
-          <li>Contact details (contact number(s) and email)</li>
+          <li>Contact details (phone number and email)</li>
           <li>Participation details in the Program</li>
           <li>Level of Education</li>
           <li>Marital status</li>
-          <li>Location or Residence, including region, district, and community</li>
+          <li>Location or Residence (region, district, community)</li>
           <li>Refugee or displaced persons status</li>
           <li>Presence of a disability</li>
           <li>Feedback and responses to surveys</li>
-          <li>Audio-visual data including pictures, videos and voice recording</li>
+          <li>Audio-visual data (pictures, videos, voice recordings)</li>
         </ul>
+        
         <h3>3. Who Will Your Data Be Shared With?</h3>
-        <p>We may share your data with the following parties:</p>
+        <p>We may share your data with:</p>
         <ul>
           <li>Agri-Impact Limited – the Program Management Unit</li>
           <li>Funding Partner</li>
-          <li>Third-party data processors hired by Funding Partner to assist with monitoring and evaluation (e.g., data storage and analysis organizations)</li>
+          <li>Third-party data processors for monitoring and evaluation</li>
         </ul>
-        <p>For additional information on how personal data is processed, please contact <strong>+233 54 234 3168</strong> to access a copy of the privacy policy. The Foundation's privacy policy can be accessed via <a href="https://mastercardfdn.org/privacy/" target="_blank">https://mastercardfdn.org/privacy/</a></p>
+        <p>For more information, contact <strong>+233 54 234 3168</strong> or visit <a href="https://mastercardfdn.org/privacy/" target="_blank">Privacy Policy</a></p>
+        
         <h3>4. Your Rights</h3>
-        <p>You are not obligated to give your consent. You are eligible to participate in all aspects of the program, regardless of your decision to share your data. Consent to data sharing is entirely separate from program participation. You have the following rights regarding your personal data:</p>
+        <p>You have the following rights regarding your personal </p>
         <ul>
-          <li><strong>Right to access</strong>: Request a copy of the information we hold about you</li>
-          <li><strong>Right to rectification</strong>: Ask us to correct inaccurate information</li>
-          <li><strong>Right to erasure</strong>: Ask us to delete your information</li>
-          <li><strong>Right to restriction of processing</strong>: Ask us to restrict processing of your information</li>
-          <li><strong>Right to object to processing</strong>: Object to the processing of your information</li>
-          <li><strong>Right to data portability</strong>: Request transfer of your data to another organization</li>
+          <li><strong>Right to access</strong>: Request a copy of your information</li>
+          <li><strong>Right to rectification</strong>: Correct inaccurate information</li>
+          <li><strong>Right to erasure</strong>: Request deletion of your information</li>
+          <li><strong>Right to restriction</strong>: Restrict processing of your information</li>
+          <li><strong>Right to object</strong>: Object to processing</li>
+          <li><strong>Right to data portability</strong>: Transfer your data to another organization</li>
         </ul>
+        
         <h3>5. Withdrawing Your Consent</h3>
-        <p>You can withdraw your consent to share your data at any time. This will not affect your ability to participate in the program. To withdraw your consent, please contact: <strong>+233 54 234 3168</strong></p>
+        <p>You can withdraw your consent at any time by contacting: <strong>+233 54 234 3168</strong>. This will not affect your program participation.</p>
+        
         <h3>6. Understanding Your Choices</h3>
-        <p>By consenting to share your data, you are helping ensure the success of the HAPPY program for you and future participants.</p>
+        <p>By consenting, you help ensure the success of the HAPPY program for you and future participants. Participation in the program is not dependent on data sharing consent.</p>
       </div>
       
       <form id="consentForm">
@@ -99,44 +463,99 @@
           <label for="name">Full Name *</label>
           <input type="text" id="name" required placeholder="Enter your full name as it appears on ID">
         </div>
+        
         <div class="form-group">
           <label for="phone">Phone Number *</label>
           <input type="tel" id="phone" required placeholder="e.g., +233 24 123 4567">
         </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address (Optional)</label>
+          <input type="email" id="email" placeholder="e.g., yourname@email.com">
+          <small style="color: var(--text-light); display: block; margin-top: 4px;">We'll send you a confirmation email if provided</small>
+        </div>
+        
         <div class="form-group">
           <label>Signature *</label>
           <div class="signature-box">
             <canvas id="sigCanvas"></canvas>
-            <p class="signature-hint">Use your finger or mouse to sign above the line</p>
+            <p class="signature-hint">Use your finger or mouse to sign above</p>
             <div class="btn-row">
               <button type="button" id="clearSig">🔄 Clear Signature</button>
             </div>
           </div>
         </div>
+        
         <div class="consent-check">
           <input type="checkbox" id="consentCheck" required>
           <label for="consentCheck">
-            <strong>I agree</strong> to share my data with Agri-Impact Limited, the Funding Agency, and any third-party data processors they may use for the purposes described above. I confirm that I have read and understood this consent form.
+            <strong>I agree</strong> to share my data with Agri-Impact Limited, the Funding Agency, and any third-party data processors for the purposes described above. I confirm that I have read and understood this consent form.
           </label>
         </div>
+        
         <button type="submit" id="submitBtn">✅ Submit Consent</button>
       </form>
+      
       <div id="status"></div>
     </div>
+    
+    <!-- Footer -->
     <div class="footer">
-      <p>🔒 Your data is protected. Questions? Contact: +233 54 234 3168</p>
-      <p>Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank">mastercardfdn.org/privacy</a></p>
+      <div class="footer-contact">
+        <strong>📞 0270 176611</strong> | <strong>📧 redro@jobberman.com.gh</strong><br>
+        <small>Your data is protected. Questions? Contact: +233 54 234 3168</small>
+      </div>
+      
+      <hr class="footer-divider">
+      
+      <div class="footer-bottom">
+        Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank">mastercardfdn.org/privacy</a>
+      </div>
+      
+      <div class="dev-signature">
+        Powered by: Murphy Richards - MERL Manager
+      </div>
     </div>
   </div>
 
   <script>
-    // ✅ YOUR WEB APP URL - ALREADY INSERTED
+    // Configuration
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjN1_lV0_aq9rEoROhJ275QPc1a6o7htxVhc8r4PyY0aXmJ-VNPxbiMi2WRLpo8zfeXA/exec';
-
+    
+    // Translations
+    const translations = {
+      en: {
+        consentTitle: 'Participant Consent Form',
+        submitBtn: '✅ Submit Consent',
+        clearSig: '🔄 Clear Signature',
+        consentCheck: 'I agree to share my data with Agri-Impact Limited, the Funding Agency, and any third-party data processors for the purposes described above. I confirm that I have read and understood this consent form.'
+      },
+      tw: {
+        consentTitle: 'Ntom Krataa',
+        submitBtn: '✅ Bɔ Toe',
+        clearSig: '🔄 Pɛ Nkrataa',
+        consentCheck: 'Me gyeme sɛ mɛma wɔde me nsɛm bɛhyɛ Agri-Impact Limited, Funding Agency, ne biara a wɔde bɛboa wɔn adwuma no nyinaa nsa.'
+      },
+      ha: {
+        consentTitle: 'Takardar Yardar',
+        submitBtn: '✅ Aika',
+        clearSig: '🔄 Share Sanya hannu',
+        consentCheck: 'In yarda a rika bayanina tare da Agri-Impact Limited da kuma masu ba da gudummawa.'
+      },
+      ga: {
+        consentTitle: 'Mɔɔlɔ Ŋmɛnɛɔ',
+        submitBtn: '✅ Kɛ Nyɛ',
+        clearSig: '🔄 Kɛ Gbɔɔ',
+        consentCheck: 'Mi yɛ mi yɛɛ mi yɛ mi yɛɛ mi yɛ mi yɛɛ mi y.'
+      }
+    };
+    
+    // Canvas setup
     const canvas = document.getElementById('sigCanvas');
     const ctx = canvas.getContext('2d');
     const statusEl = document.getElementById('status');
     let isDrawing = false;
+    let hasDrawn = false;
 
     function resizeCanvas() {
       const dpr = window.devicePixelRatio || 1;
@@ -149,69 +568,151 @@
       ctx.lineJoin = 'round';
       ctx.strokeStyle = '#1a1a1a';
     }
+    
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    // Drawing functions - FIXED to prevent clearing on input
     function getPos(e) {
       const rect = canvas.getBoundingClientRect();
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+      };
     }
-    function startDraw(e) { e.preventDefault(); isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); }
-    function draw(e) { if (!isDrawing) return; e.preventDefault(); const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }
-    function endDraw() { if (isDrawing) { ctx.closePath(); isDrawing = false; } }
 
+    function startDraw(e) {
+      e.preventDefault();
+      isDrawing = true;
+      hasDrawn = true;
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function endDraw() {
+      if (isDrawing) {
+        ctx.closePath();
+        isDrawing = false;
+      }
+    }
+
+    // Mouse events
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', endDraw);
     canvas.addEventListener('mouseleave', endDraw);
+    
+    // Touch events
     canvas.addEventListener('touchstart', startDraw, { passive: false });
     canvas.addEventListener('touchmove', draw, { passive: false });
     canvas.addEventListener('touchend', endDraw);
     canvas.addEventListener('touchcancel', endDraw);
 
-    document.getElementById('clearSig').addEventListener('click', () => { ctx.clearRect(0, 0, canvas.width, canvas.height); statusEl.style.display = 'none'; });
+    // Clear signature
+    document.getElementById('clearSig').addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hasDrawn = false;
+      statusEl.style.display = 'none';
+    });
 
+    // Language change
+    function changeLanguage() {
+      const lang = document.getElementById('languageSelect').value;
+      const t = translations[lang];
+      
+      if (t) {
+        document.querySelector('.header p').textContent = t.consentTitle;
+        document.getElementById('submitBtn').textContent = t.submitBtn;
+        document.getElementById('clearSig').textContent = t.clearSig;
+        // Update consent checkbox label
+        const consentLabel = document.querySelector('.consent-check label');
+        if (consentLabel && t.consentCheck) {
+          consentLabel.innerHTML = `<strong>I agree</strong> ${t.consentCheck}`;
+        }
+      }
+    }
+
+    // Form submission
     document.getElementById('consentForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
       const consentGiven = document.getElementById('consentCheck').checked;
+      const language = document.getElementById('languageSelect').value;
       const submitBtn = document.getElementById('submitBtn');
       
-      const blankCanvas = document.createElement('canvas');
-      blankCanvas.width = canvas.width; blankCanvas.height = canvas.height;
-      if (canvas.toDataURL() === blankCanvas.toDataURL()) {
+      // Validate signature
+      if (!hasDrawn) {
         showStatus('❌ Please draw your signature above', 'error');
         canvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
+      
       if (!consentGiven) {
         showStatus('❌ Please check the consent box to proceed', 'error');
         document.getElementById('consentCheck').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
       
-      const payload = { name, phone, consentGiven, timestamp: new Date().toISOString(), signature: canvas.toDataURL('image/png') };
+      const payload = {
+        name,
+        phone,
+        email,
+        consentGiven,
+        timestamp: new Date().toISOString(),
+        signature: canvas.toDataURL('image/png'),
+        language
+      };
       
       submitBtn.disabled = true;
       submitBtn.textContent = '⏳ Submitting...';
       showStatus('Processing your consent securely...', 'success');
       
       try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          mode: 'cors'
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        
         const result = await response.json();
+        
         if (result.status === 'success') {
-          showStatus(`✅ Consent submitted successfully!<br><small>Submission ID: ${result.submissionId || 'N/A'}</small>`, 'success');
+          const emailMsg = email ? `<br><small>✅ Confirmation email sent to ${email}</small>` : '';
+          showStatus(`✅ Consent submitted successfully!<br><small>Submission ID: ${result.submissionId}</small>${emailMsg}`, 'success');
+          
+          // Reset form
           document.getElementById('consentForm').reset();
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+          hasDrawn = false;
+          
+          // Scroll to top
           document.querySelector('.header').scrollIntoView({ behavior: 'smooth' });
-        } else { throw new Error(result.message || 'Submission failed'); }
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
       } catch (err) {
         console.error('Submission error:', err);
-        showStatus(`❌ Error: ${err.message}. Please check connection and try again.`, 'error');
+        showStatus(`❌ Error: ${err.message}. Please check your internet connection and try again.`, 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '✅ Submit Consent';
@@ -222,7 +723,14 @@
       statusEl.innerHTML = msg;
       statusEl.className = `status-${type}`;
       statusEl.style.display = 'block';
-      if (type === 'success') setTimeout(() => { if (statusEl.className.includes('status-success')) statusEl.style.display = 'none'; }, 8000);
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          if (statusEl.className.includes('status-success')) {
+            statusEl.style.display = 'none';
+          }
+        }, 10000);
+      }
     }
   </script>
 </body>
