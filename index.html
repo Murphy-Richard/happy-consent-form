@@ -1,125 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>HAPPY Program Digital Consent Form</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>HAPPY Program Consent</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" href="icon-192.png">
   <style>
-    body { font-family: Arial, sans-serif; margin:0; background:#f9fafb; }
-    header { background: linear-gradient(90deg,#4F46E5,#7C3AED); color:#fff; padding:1rem; text-align:center; }
-    header img { height:48px; vertical-align:middle; }
-    .card { max-width:600px; margin:1rem auto; background:#fff; padding:1.5rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
-    label { display:block; margin-top:1rem; font-weight:bold; }
-    input, select, button, canvas { width:100%; margin-top:0.5rem; padding:0.5rem; }
-    canvas { border:1px solid #ccc; height:150px; }
-    .status { margin-top:1rem; padding:0.75rem; border-radius:4px; display:none; }
-    .status.success { background:#d1fae5; color:#065f46; }
-    .status.error { background:#fee2e2; color:#991b1b; }
-    footer { text-align:center; font-size:0.9rem; color:#555; margin:2rem 0; }
+    :root{--brand1:#4F46E5;--brand2:#7C3AED;--bg:#f9fafb}
+    body{margin:0;font-family:Inter,Arial;background:var(--bg);color:#111}
+    header{background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#fff;padding:14px;text-align:center}
+    .container{max-width:640px;margin:16px auto;padding:0 12px}
+    .card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,select,button,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6e6f0}
+    canvas{width:100%;height:160px;border:1px solid #e6e6f0;border-radius:8px}
+    .row{display:flex;gap:8px}
+    .muted{color:#6b7280;font-size:0.9rem}
+    .status{margin-top:12px;padding:10px;border-radius:8px;display:none}
+    .status.success{background:#d1fae5;color:#065f46}
+    .status.error{background:#fee2e2;color:#991b1b}
+    footer{max-width:640px;margin:18px auto;text-align:center;color:#6b7280;font-size:0.9rem}
   </style>
 </head>
 <body>
   <header>
-    <img src="icon-192.png" alt="Jobberman Ghana Logo" onerror="this.style.display='none'">
-    <h1>HAPPY Program Consent</h1>
-    <select id="langToggle" style="float:right; margin-top:-2rem;">
-      <option value="English">English</option>
-      <option value="Twi">Twi</option>
-      <option value="Hausa">Hausa</option>
-      <option value="Ga">Ga</option>
-    </select>
+    <img src="icon-192.png" alt="Jobberman" style="height:44px;vertical-align:middle" onerror="this.style.display='none'">
+    <h1 style="margin:8px 0 0 0">HAPPY Program Consent</h1>
   </header>
 
-  <div class="card">
-    <h2>Consent Statement</h2>
-    <div style="max-height:150px; overflow-y:auto; border:1px solid #ddd; padding:0.5rem;">
-      <p><strong>Purpose:</strong> We collect your personal data to analyze program progress, improve services, and monitor effectiveness.</p>
-      <p><strong>Data Collected:</strong> Name, age, gender, contact details, education, location, participation details, refugee/displaced status, disability status, feedback, surveys, audio-visual data.</p>
-      <p><strong>Data Sharing:</strong> Shared with Agri-Impact Limited, Funding Partners, and approved processors. Privacy Policy: mastercardfdn.org/privacy</p>
-      <p><strong>Your Rights:</strong> Access, correct, delete, restrict, or port your data. Withdraw consent anytime. Contact: +233 54 234 3168</p>
+  <div class="container">
+    <div class="card" id="formCard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="muted">Language</div>
+        <select id="langToggle" aria-label="Language">
+          <option>English</option><option>Twi</option><option>Hausa</option><option>Ga</option>
+        </select>
+      </div>
+
+      <h3 style="margin-top:12px">Consent Summary</h3>
+      <div style="max-height:140px;overflow:auto;border:1px solid #eef2ff;padding:10px;border-radius:8px">
+        <p><strong>Purpose:</strong> We collect your personal data to analyze program progress, improve services, and monitor effectiveness.</p>
+        <p><strong>Data Collected:</strong> Name, age, gender, contact details, education, location, participation details, refugee/displaced status, disability status, feedback, surveys, audio-visual data.</p>
+        <p><strong>Data Sharing:</strong> Shared with Agri-Impact Limited, Funding Partners, and approved processors. Privacy Policy: <a href="https://mastercardfdn.org/privacy" target="_blank">mastercardfdn.org/privacy</a></p>
+        <p><strong>Your Rights:</strong> Access, correct, delete, restrict, or port your data. Withdraw consent anytime. Contact: +233 54 234 3168</p>
+      </div>
+
+      <form id="consentForm" autocomplete="off">
+        <label for="name">Full Name *</label>
+        <input id="name" name="name" required>
+
+        <label for="phone">Phone Number *</label>
+        <input id="phone" name="phone" type="tel" placeholder="024XXXXXXX" required>
+
+        <label for="email">Email (optional)</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com">
+
+        <label>Signature *</label>
+        <canvas id="sigPad"></canvas>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button type="button" id="clearSig">Clear</button>
+          <div class="muted" style="align-self:center">Draw with finger or mouse</div>
+        </div>
+
+        <label style="margin-top:12px">
+          <input type="checkbox" id="consentGiven" required> I have read and agree to the consent statement
+        </label>
+
+        <button type="submit" style="background:var(--brand1);color:#fff;border:none;margin-top:12px;padding:12px;border-radius:8px">Submit</button>
+      </form>
+
+      <div id="status" class="status"></div>
     </div>
-
-    <form id="consentForm">
-      <label>Full Name *</label>
-      <input type="text" id="name" required>
-
-      <label>Phone Number *</label>
-      <input type="tel" id="phone" required>
-
-      <label>Email (optional)</label>
-      <input type="email" id="email">
-
-      <label>Signature *</label>
-      <canvas id="signaturePad"></canvas>
-      <button type="button" id="clearSig">Clear Signature</button>
-
-      <label>
-        <input type="checkbox" id="consentGiven" required> I have read and agree
-      </label>
-
-      <button type="submit" style="background:#4F46E5;color:#fff;border:none;">Submit</button>
-    </form>
-
-    <div id="status" class="status"></div>
   </div>
 
   <footer>
-    📞 0270 176611 | redro@jobberman.com.gh<br>
-    Support line | <a href="https://mastercardfdn.org/privacy">Privacy Policy</a><br>
-    Powered by: Murphy Richards - MERL Manager
+    📞 0270 176611 | redro@jobberman.com.gh • Powered by Murphy Richards - MERL Manager
   </footer>
 
 <script>
-const backendURL = "https://script.google.com/macros/s/1yV1Y3YtsFFIZSYgV1pYh4YbVzXVhCVn8Fq7A6T_8j1_Gb5kTj6a8I5Fw/exec";
+const BACKEND = 'https://script.google.com/macros/s/AKfycbwAg-ji8eLfFLlX5v6wUrTRInavhhTPbExQSqIeXDwKdct53ekRKbdcyEiUQ-W5OWFfmA/exec';
+const form = document.getElementById('consentForm');
+const statusEl = document.getElementById('status');
 
-const canvas = document.getElementById('signaturePad');
+// Signature canvas setup
+const canvas = document.getElementById('sigPad');
 const ctx = canvas.getContext('2d');
-let drawing = false;
-canvas.addEventListener('mousedown', () => drawing=true);
-canvas.addEventListener('mouseup', () => drawing=false);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('touchstart', () => drawing=true);
-canvas.addEventListener('touchend', () => drawing=false);
-canvas.addEventListener('touchmove', drawTouch);
+function resizeCanvas(){ const ratio = window.devicePixelRatio || 1; canvas.width = canvas.clientWidth * ratio; canvas.height = canvas.clientHeight * ratio; ctx.scale(ratio, ratio); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000'; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
-function draw(e){ if(!drawing) return; ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(e.offsetX,e.offsetY,2,0,2*Math.PI); ctx.fill(); }
-function drawTouch(e){ if(!drawing) return; const rect=canvas.getBoundingClientRect(); const x=e.touches[0].clientX-rect.left; const y=e.touches[0].clientY-rect.top; ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(x,y,2,0,2*Math.PI); ctx.fill(); }
+let drawing=false, lastX=0, lastY=0;
+function pointerDown(e){ drawing=true; const p = getPos(e); lastX=p.x; lastY=p.y; }
+function pointerUp(){ drawing=false; }
+function pointerMove(e){ if(!drawing) return; const p=getPos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; }
+function getPos(e){ const rect=canvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: clientX - rect.left, y: clientY - rect.top }; }
 
-document.getElementById('clearSig').onclick=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
+canvas.addEventListener('mousedown', pointerDown); canvas.addEventListener('mousemove', pointerMove); window.addEventListener('mouseup', pointerUp);
+canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); pointerDown(e); }, {passive:false});
+canvas.addEventListener('touchmove', (e)=>{ e.preventDefault(); pointerMove(e); }, {passive:false});
+canvas.addEventListener('touchend', pointerUp);
 
-document.getElementById('consentForm').onsubmit=async(ev)=>{
+document.getElementById('clearSig').addEventListener('click', ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); });
+
+function canvasIsBlank() {
+  const blank = document.createElement('canvas');
+  blank.width = canvas.width; blank.height = canvas.height;
+  return canvas.toDataURL() === blank.toDataURL();
+}
+
+async function postJson(payload) {
+  try {
+    const res = await fetch(BACKEND, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  } catch (err) {
+    // JSONP fallback
+    return new Promise((resolve, reject) => {
+      const cb = 'cb_' + Date.now();
+      window[cb] = (data) => { resolve(data); delete window[cb]; script.remove(); };
+      const script = document.createElement('script');
+      script.src = `${BACKEND}?callback=${cb}`;
+      script.onerror = () => { delete window[cb]; script.remove(); reject(new Error('JSONP failed')); };
+      document.body.appendChild(script);
+    });
+  }
+}
+
+form.addEventListener('submit', async (ev) => {
   ev.preventDefault();
-  const status=document.getElementById('status');
-  status.style.display='block'; status.className='status'; status.textContent='Processing...';
+  statusEl.style.display='block'; statusEl.className='status'; statusEl.textContent='Processing...';
 
-  const data={
-    name:document.getElementById('name').value,
-    phone:document.getElementById('phone').value,
-    email:document.getElementById('email').value,
-    consentGiven:document.getElementById('consentGiven').checked,
-    timestamp:new Date().toISOString(),
-    signature:canvas.toDataURL('image/png'),
-    language:document.getElementById('langToggle').value
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const consentGiven = document.getElementById('consentGiven').checked;
+  const language = document.getElementById('langToggle').value;
+
+  if (!name || !phone || !consentGiven) {
+    statusEl.className='status error'; statusEl.textContent='Please complete required fields and accept consent.';
+    return;
+  }
+  if (canvasIsBlank()) {
+    statusEl.className='status error'; statusEl.textContent='Please provide your signature.';
+    return;
+  }
+
+  const payload = {
+    name, phone, email, consentGiven, language,
+    timestamp: new Date().toISOString(),
+    signature: canvas.toDataURL('image/png')
   };
 
-  try{
-    const res=await fetch(backendURL,{method:'POST',body:JSON.stringify(data)});
-    const json=await res.json();
-    if(json.status==='success'){
-      status.className='status success';
-      status.textContent=`✅ Submitted! ID: ${json.submissionId}`;
-      ev.target.reset(); ctx.clearRect(0,0,canvas.width,canvas.height);
+  try {
+    const json = await postJson(payload);
+    if (json && json.status === 'success') {
+      statusEl.className='status success'; statusEl.textContent = `✅ Submitted! ID: ${json.submissionId}`;
+      form.reset(); ctx.clearRect(0,0,canvas.width,canvas.height);
       window.scrollTo({top:0,behavior:'smooth'});
+      setTimeout(()=>{ statusEl.style.display='none'; }, 7000);
     } else {
-      status.className='status error';
-      status.textContent=`❌ ${json.message}`;
+      statusEl.className='status error'; statusEl.textContent = `❌ ${json?.message || 'Submission failed'}`;
     }
-  }catch(err){
-    status.className='status error';
-    status.textContent='❌ Network error: '+err;
+  } catch (err) {
+    statusEl.className='status error'; statusEl.textContent = '❌ Network error: ' + err.message;
   }
-};
+});
 </script>
 </body>
 </html>
