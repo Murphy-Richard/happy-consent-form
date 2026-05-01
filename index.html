@@ -19,7 +19,9 @@
     .status{margin-top:12px;padding:10px;border-radius:8px;display:none}
     .status.success{background:#d1fae5;color:#065f46}
     .status.error{background:#fee2e2;color:#991b1b}
+    .diag{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
     footer{max-width:640px;margin:18px auto;text-align:center;color:#6b7280;font-size:0.9rem}
+    .small{font-size:0.85rem;color:#6b7280}
   </style>
 </head>
 <body>
@@ -70,6 +72,12 @@
       </form>
 
       <div id="status" class="status"></div>
+
+      <div class="diag">
+        <button id="diagBtn">Run diagnostic (console)</button>
+        <button id="diagJsonp">Test JSONP URL</button>
+        <div class="small">Open DevTools Console to view detailed logs.</div>
+      </div>
     </div>
   </div>
 
@@ -78,55 +86,113 @@
   </footer>
 
 <script>
+/* CONFIG */
 const BACKEND = 'https://script.google.com/macros/s/AKfycbwAg-ji8eLfFLlX5v6wUrTRInavhhTPbExQSqIeXDwKdct53ekRKbdcyEiUQ-W5OWFfmA/exec';
-const form = document.getElementById('consentForm');
-const statusEl = document.getElementById('status');
 
-// Signature canvas setup
+/* Canvas setup */
 const canvas = document.getElementById('sigPad');
 const ctx = canvas.getContext('2d');
-function resizeCanvas(){ const ratio = window.devicePixelRatio || 1; canvas.width = canvas.clientWidth * ratio; canvas.height = canvas.clientHeight * ratio; ctx.scale(ratio, ratio); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000'; }
+function resizeCanvas(){
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = canvas.clientWidth * ratio;
+  canvas.height = canvas.clientHeight * ratio;
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+}
 resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
 let drawing=false, lastX=0, lastY=0;
-function pointerDown(e){ drawing=true; const p = getPos(e); lastX=p.x; lastY=p.y; }
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
+function pointerDown(e){ drawing=true; const p=getPos(e); lastX=p.x; lastY=p.y; }
 function pointerUp(){ drawing=false; }
 function pointerMove(e){ if(!drawing) return; const p=getPos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; }
-function getPos(e){ const rect=canvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: clientX - rect.left, y: clientY - rect.top }; }
 
-canvas.addEventListener('mousedown', pointerDown); canvas.addEventListener('mousemove', pointerMove); window.addEventListener('mouseup', pointerUp);
+canvas.addEventListener('mousedown', pointerDown);
+canvas.addEventListener('mousemove', pointerMove);
+window.addEventListener('mouseup', pointerUp);
 canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); pointerDown(e); }, {passive:false});
 canvas.addEventListener('touchmove', (e)=>{ e.preventDefault(); pointerMove(e); }, {passive:false});
 canvas.addEventListener('touchend', pointerUp);
 
 document.getElementById('clearSig').addEventListener('click', ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); });
 
-function canvasIsBlank() {
+function canvasIsBlank(){
   const blank = document.createElement('canvas');
   blank.width = canvas.width; blank.height = canvas.height;
   return canvas.toDataURL() === blank.toDataURL();
 }
 
-async function postJson(payload) {
+/* Robust JSONP fallback */
+function jsonpFallback(url, timeoutMs = 8000) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+    const script = document.createElement('script');
+    let timedOut = false;
+
+    window[cbName] = (data) => {
+      if (timedOut) return;
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+    script.async = true;
+    script.onerror = () => {
+      if (timedOut) return;
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error('JSONP script load error'));
+    };
+
+    function cleanup() {
+      try { script.remove(); } catch (e) {}
+      try { delete window[cbName]; } catch (e) {}
+    }
+
+    const timer = setTimeout(() => {
+      timedOut = true;
+      cleanup();
+      reject(new Error('JSONP timeout'));
+    }, timeoutMs);
+
+    document.head.appendChild(script);
+  });
+}
+
+/* POST helper with fallback */
+async function postJsonWithFallback(payload) {
   try {
+    console.log('Attempting fetch POST to backend...', BACKEND);
     const res = await fetch(BACKEND, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    return await res.json();
-  } catch (err) {
-    // JSONP fallback
-    return new Promise((resolve, reject) => {
-      const cb = 'cb_' + Date.now();
-      window[cb] = (data) => { resolve(data); delete window[cb]; script.remove(); };
-      const script = document.createElement('script');
-      script.src = `${BACKEND}?callback=${cb}`;
-      script.onerror = () => { delete window[cb]; script.remove(); reject(new Error('JSONP failed')); };
-      document.body.appendChild(script);
-    });
+    console.log('Fetch response status:', res.status, 'content-type:', res.headers.get('content-type'));
+    const json = await res.json();
+    return json;
+  } catch (fetchErr) {
+    console.warn('Fetch failed, attempting JSONP fallback:', fetchErr);
+    try {
+      const jsonpData = await jsonpFallback(BACKEND);
+      console.log('JSONP fallback returned:', jsonpData);
+      return jsonpData;
+    } catch (jsonpErr) {
+      console.error('JSONP fallback failed:', jsonpErr);
+      throw jsonpErr;
+    }
   }
 }
+
+/* Form submit */
+const form = document.getElementById('consentForm');
+const statusEl = document.getElementById('status');
 
 form.addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -154,7 +220,7 @@ form.addEventListener('submit', async (ev) => {
   };
 
   try {
-    const json = await postJson(payload);
+    const json = await postJsonWithFallback(payload);
     if (json && json.status === 'success') {
       statusEl.className='status success'; statusEl.textContent = `✅ Submitted! ID: ${json.submissionId}`;
       form.reset(); ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -164,7 +230,34 @@ form.addEventListener('submit', async (ev) => {
       statusEl.className='status error'; statusEl.textContent = `❌ ${json?.message || 'Submission failed'}`;
     }
   } catch (err) {
-    statusEl.className='status error'; statusEl.textContent = '❌ Network error: ' + err.message;
+    statusEl.className='status error'; statusEl.textContent = '❌ Network error: ' + (err.message || err);
+  }
+});
+
+/* Diagnostic buttons */
+document.getElementById('diagBtn').addEventListener('click', async () => {
+  console.log('Running browser POST diagnostic to backend...');
+  const payload = { name: 'Diag Test', phone: '0240000000', consentGiven: true, timestamp: new Date().toISOString() };
+  try {
+    const res = await postJsonWithFallback(payload);
+    console.log('Diagnostic result:', res);
+    alert('Diagnostic complete — check Console for details.');
+  } catch (e) {
+    console.error('Diagnostic failed:', e);
+    alert('Diagnostic failed — check Console for details.');
+  }
+});
+
+document.getElementById('diagJsonp').addEventListener('click', async () => {
+  const testUrl = BACKEND + (BACKEND.includes('?') ? '&' : '?') + 'callback=cb_test';
+  console.log('Testing JSONP URL (will follow redirects in browser):', testUrl);
+  try {
+    const data = await jsonpFallback(BACKEND, 10000);
+    console.log('JSONP test returned:', data);
+    alert('JSONP test complete — check Console for details.');
+  } catch (err) {
+    console.error('JSONP test failed:', err);
+    alert('JSONP test failed — check Console for details.');
   }
 });
 </script>
