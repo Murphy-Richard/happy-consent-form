@@ -1,265 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>HAPPY Program Consent</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="icon" href="icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Jobberman Ghana - HAPPY Program Consent</title>
+  <link rel="icon" type="image/png" href="icon-192.png">
   <style>
-    :root{--brand1:#4F46E5;--brand2:#7C3AED;--bg:#f9fafb}
-    body{margin:0;font-family:Inter,Arial;background:var(--bg);color:#111}
-    header{background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#fff;padding:14px;text-align:center}
-    .container{max-width:640px;margin:16px auto;padding:0 12px}
-    .card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
-    label{display:block;margin-top:12px;font-weight:600}
-    input,select,button,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6e6f0}
-    canvas{width:100%;height:160px;border:1px solid #e6e6f0;border-radius:8px}
-    .row{display:flex;gap:8px}
-    .muted{color:#6b7280;font-size:0.9rem}
-    .status{margin-top:12px;padding:10px;border-radius:8px;display:none}
-    .status.success{background:#d1fae5;color:#065f46}
-    .status.error{background:#fee2e2;color:#991b1b}
-    .diag{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-    footer{max-width:640px;margin:18px auto;text-align:center;color:#6b7280;font-size:0.9rem}
-    .small{font-size:0.85rem;color:#6b7280}
+    :root{--blue:#4F46E5;--purple:#7C3AED;--grad:linear-gradient(135deg,var(--blue),var(--purple));--light:#F9FAFB;--border:#E5E7EB;--text:#111827;--muted:#6B7280}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;color:var(--text);background:var(--grad);min-height:100vh;padding:16px}
+    .container{max-width:850px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+    .header{background:var(--grad);color:#fff;padding:24px;text-align:center;position:relative}
+    .logo{width:80px;height:80px;background:#fff;border-radius:12px;padding:8px;margin-bottom:12px;object-fit:contain}
+    .header h1{font-size:1.6rem;margin-bottom:4px;font-weight:700}
+    .header h2{font-size:1.1rem;opacity:.95;margin-bottom:2px;font-weight:600}
+    .header p{font-size:.9rem;opacity:.9}
+    .lang-select{position:absolute;top:12px;right:12px}
+    .lang-select select{padding:6px 10px;border:2px solid rgba(255,255,255,.3);border-radius:6px;background:rgba(255,255,255,.2);color:#fff;font-size:.85rem;cursor:pointer}
+    .content{padding:20px}
+    .intro{background:var(--light);border-left:4px solid var(--blue);padding:14px;margin-bottom:16px;border-radius:0 6px 6px 0;font-size:.9rem;line-height:1.6}
+    .consent-box{background:#F3F4F6;border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;max-height:300px;overflow-y:auto;font-size:.9rem;line-height:1.6}
+    .consent-box h3{color:var(--blue);margin:12px 0 6px;font-size:1rem;font-weight:600}
+    .consent-box ul{padding-left:20px;margin:6px 0}
+    .consent-box li{margin-bottom:4px}
+    .consent-box a{color:var(--blue);text-decoration:none}
+    .form-group{margin-bottom:16px}
+    label{display:block;margin-bottom:6px;font-weight:600;font-size:.92rem}
+    input{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:6px;font-size:1rem;transition:border-color .2s}
+    input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
+    small{color:var(--muted);font-size:.8rem;display:block;margin-top:4px}
+    .sig-box{border:2px dashed var(--border);border-radius:8px;padding:12px;background:#FAFAFA}
+    canvas{width:100%;height:160px;border:2px solid var(--border);border-radius:6px;background:#fff;touch-action:none;cursor:crosshair;display:block}
+    .sig-hint{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
+    .btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;margin-top:8px;transition:transform .1s}
+    .btn:active{transform:scale(.98)}
+    #clearSig{background:#E5E7EB;color:#374151}
+    #submitBtn{background:var(--grad);color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.4)}
+    #submitBtn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .consent-check{display:flex;align-items:flex-start;gap:10px;margin:18px 0;padding:14px;background:#EEF2FF;border-radius:8px;border:2px solid var(--blue)}
+    .consent-check input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
+    .consent-check label{margin:0;font-size:.9rem;line-height:1.5;cursor:pointer}
+    #status{padding:12px;border-radius:8px;margin:16px 0;text-align:center;font-weight:500;display:none;animation:slideIn .25s ease}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    .status-success{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;display:block}
+    .status-error{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA;display:block}
+    .footer{background:var(--light);border-top:1px solid var(--border);padding:18px 20px 24px;text-align:center;position:relative}
+    .footer strong{color:var(--blue)}
+    .footer a{color:var(--blue);text-decoration:none}
+    .footer hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+    .dev-sig{position:absolute;bottom:8px;right:16px;font-size:.6rem;color:#9CA3AF;pointer-events:none;user-select:none}
+    @media(max-width:640px){.header h1{font-size:1.4rem}.header h2{font-size:1rem}.content{padding:16px}canvas{height:140px}.btn-row{flex-direction:column}.dev-sig{position:static;text-align:center;margin-top:10px;display:block;width:100%}}
   </style>
 </head>
 <body>
-  <header>
-    <img src="icon-192.png" alt="Jobberman" style="height:44px;vertical-align:middle" onerror="this.style.display='none'">
-    <h1 style="margin:8px 0 0 0">HAPPY Program Consent</h1>
-  </header>
-
   <div class="container">
-    <div class="card" id="formCard">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="muted">Language</div>
-        <select id="langToggle" aria-label="Language">
-          <option>English</option><option>Twi</option><option>Hausa</option><option>Ga</option>
+    <div class="header">
+      <div class="lang-select">
+        <select id="lang" onchange="setLang()" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="tw">Twi</option>
+          <option value="ha">Hausa</option>
+          <option value="ga">Ga</option>
         </select>
       </div>
-
-      <h3 style="margin-top:12px">Consent Summary</h3>
-      <div style="max-height:140px;overflow:auto;border:1px solid #eef2ff;padding:10px;border-radius:8px">
-        <p><strong>Purpose:</strong> We collect your personal data to analyze program progress, improve services, and monitor effectiveness.</p>
-        <p><strong>Data Collected:</strong> Name, age, gender, contact details, education, location, participation details, refugee/displaced status, disability status, feedback, surveys, audio-visual data.</p>
-        <p><strong>Data Sharing:</strong> Shared with Agri-Impact Limited, Funding Partners, and approved processors. Privacy Policy: <a href="https://mastercardfdn.org/privacy" target="_blank">mastercardfdn.org/privacy</a></p>
-        <p><strong>Your Rights:</strong> Access, correct, delete, restrict, or port your data. Withdraw consent anytime. Contact: +233 54 234 3168</p>
+      <img src="icon-192.png" alt="Jobberman Ghana" class="logo" onerror="this.style.display='none'">
+      <h1>Jobberman Ghana</h1>
+      <h2>HAPPY Program</h2>
+      <p>Participant Consent Form</p>
+    </div>
+    
+    <div class="content">
+      <div class="intro">
+        <strong>HAPPY Program</strong> collects data to improve agricultural youth programs. Your privacy is protected.
       </div>
-
-      <form id="consentForm" autocomplete="off">
-        <label for="name">Full Name *</label>
-        <input id="name" name="name" required>
-
-        <label for="phone">Phone Number *</label>
-        <input id="phone" name="phone" type="tel" placeholder="024XXXXXXX" required>
-
-        <label for="email">Email (optional)</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com">
-
-        <label>Signature *</label>
-        <canvas id="sigPad"></canvas>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button type="button" id="clearSig">Clear</button>
-          <div class="muted" style="align-self:center">Draw with finger or mouse</div>
+      
+      <div class="consent-box">
+        <h3>1. Purpose</h3>
+        <p>We collect your personal data to analyze program progress, improve services, and monitor effectiveness of the Harnessing Agricultural Productivity and Prosperity for Youth program.</p>
+        <h3>2. Data Collected</h3>
+        <ul>
+          <li>Name, age, gender, contact details</li>
+          <li>Education, location, participation details</li>
+          <li>Refugee/displaced status, disability status</li>
+          <li>Feedback, surveys, audio-visual data</li>
+        </ul>
+        <h3>3. Data Sharing</h3>
+        <p>Shared with Agri-Impact Limited, Funding Partners, and approved data processors for monitoring and evaluation.</p>
+        <p>Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank" rel="noopener">mastercardfdn.org/privacy</a></p>
+        <h3>4. Your Rights</h3>
+        <p>Access, correct, delete, restrict, or port your data. Withdraw consent anytime without affecting program participation. Contact: <strong>+233 54 234 3168</strong></p>
+      </div>
+      
+      <form id="form" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" required placeholder="Your full name as on ID" autocomplete="name">
         </div>
-
-        <label style="margin-top:12px">
-          <input type="checkbox" id="consentGiven" required> I have read and agree to the consent statement
-        </label>
-
-        <button type="submit" style="background:var(--brand1);color:#fff;border:none;margin-top:12px;padding:12px;border-radius:8px">Submit</button>
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" name="phone" required placeholder="+233 XX XXX XXXX" autocomplete="tel">
+          <small>Format: +233 24 123 4567</small>
+        </div>
+        <div class="form-group">
+          <label for="email">Email (Optional)</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+          <small>Receive confirmation email</small>
+        </div>
+        <div class="form-group">
+          <label>Signature *</label>
+          <div class="sig-box">
+            <canvas id="sig" aria-label="Draw your signature here"></canvas>
+            <p class="sig-hint">Use finger or mouse to sign above</p>
+            <button type="button" class="btn" id="clearSig">🔄 Clear Signature</button>
+          </div>
+        </div>
+        <div class="consent-check">
+          <input type="checkbox" id="agree" name="consent" required>
+          <label for="agree"><strong>I agree</strong> to share my data as described above. I confirm I have read and understood this form.</label>
+        </div>
+        <button type="submit" class="btn" id="submitBtn">✅ Submit Consent</button>
       </form>
-
-      <div id="status" class="status"></div>
-
-      <div class="diag">
-        <button id="diagBtn">Run diagnostic (console)</button>
-        <button id="diagJsonp">Test JSONP URL</button>
-        <div class="small">Open DevTools Console to view detailed logs.</div>
-      </div>
+      
+      <div id="status" role="alert" aria-live="polite"></div>
+    </div>
+    
+    <div class="footer">
+      <div><strong>📞 0270 176611</strong> | <strong>📧 redro@jobberman.com.gh</strong><br><small>Your data is protected. Questions? +233 54 234 3168</small></div>
+      <hr>
+      <small>Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank" rel="noopener">mastercardfdn.org/privacy</a></small>
+      <div class="dev-sig">Powered by: Murphy Richards - MERL Manager</div>
     </div>
   </div>
 
-  <footer>
-    📞 0270 176611 | redro@jobberman.com.gh • Powered by Murphy Richards - MERL Manager
-  </footer>
-
-<script>
-/* CONFIG */
-const BACKEND = 'https://script.google.com/macros/s/AKfycbwAg-ji8eLfFLlX5v6wUrTRInavhhTPbExQSqIeXDwKdct53ekRKbdcyEiUQ-W5OWFfmA/exec';
-
-/* Canvas setup */
-const canvas = document.getElementById('sigPad');
-const ctx = canvas.getContext('2d');
-function resizeCanvas(){
-  const ratio = window.devicePixelRatio || 1;
-  canvas.width = canvas.clientWidth * ratio;
-  canvas.height = canvas.clientHeight * ratio;
-  ctx.setTransform(ratio,0,0,ratio,0,0);
-  ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
-}
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-
-let drawing=false, lastX=0, lastY=0;
-function getPos(e){
-  const rect = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
-}
-function pointerDown(e){ drawing=true; const p=getPos(e); lastX=p.x; lastY=p.y; }
-function pointerUp(){ drawing=false; }
-function pointerMove(e){ if(!drawing) return; const p=getPos(e); ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke(); lastX=p.x; lastY=p.y; }
-
-canvas.addEventListener('mousedown', pointerDown);
-canvas.addEventListener('mousemove', pointerMove);
-window.addEventListener('mouseup', pointerUp);
-canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); pointerDown(e); }, {passive:false});
-canvas.addEventListener('touchmove', (e)=>{ e.preventDefault(); pointerMove(e); }, {passive:false});
-canvas.addEventListener('touchend', pointerUp);
-
-document.getElementById('clearSig').addEventListener('click', ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); });
-
-function canvasIsBlank(){
-  const blank = document.createElement('canvas');
-  blank.width = canvas.width; blank.height = canvas.height;
-  return canvas.toDataURL() === blank.toDataURL();
-}
-
-/* Robust JSONP fallback */
-function jsonpFallback(url, timeoutMs = 8000) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
-    const script = document.createElement('script');
-    let timedOut = false;
-
-    window[cbName] = (data) => {
-      if (timedOut) return;
-      clearTimeout(timer);
-      cleanup();
-      resolve(data);
+  <script>
+    // ✅ YOUR PERMANENT WEB APP URL - PRE-INSERTED
+    const API = 'https://script.google.com/macros/s/AKfycbwOJGkeb5cUERtNF0UVAoljCzZE6wnTSrk4lpzQtDzYXgpyhiZWhdUXph7OdrbAbf9l/exec';
+    
+    const canvas = document.getElementById('sig');
+    const ctx = canvas.getContext('2d');
+    const status = document.getElementById('status');
+    let drawing = false, hasSig = false;
+    
+    function setupCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr); ctx.lineWidth = 2.5; ctx.lineCap = ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#1a1a1a';
+    }
+    window.addEventListener('resize', setupCanvas); setupCanvas();
+    
+    function pos(e) {
+      const r = canvas.getBoundingClientRect();
+      return { x: (e.touches?.[0]?.clientX || e.clientX) - r.left, y: (e.touches?.[0]?.clientY || e.clientY) - r.top };
+    }
+    function start(e) { e.preventDefault(); drawing = true; hasSig = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+    function move(e) { if (!drawing) return; e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    function end() { if (drawing) { ctx.closePath(); drawing = false; } }
+    
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('mouseup', end); canvas.addEventListener('mouseleave', end);
+    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false});
+    canvas.addEventListener('touchend', end); canvas.style.touchAction = 'none';
+    
+    document.getElementById('clearSig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); hasSig = false; status.style.display = 'none'; };
+    
+    const langs = { en:{agree:'to share my data as described above. I confirm I have read and understood this form.', btn:'✅ Submit Consent'}, tw:{agree:'sɛ mma wɔde me nsɛm bɛhyɛ nsa.', btn:'✅ Bɔ Toe'}, ha:{agree:'a rika bayanina.', btn:'✅ Aika'}, ga:{agree:'mi yɛ mi yɛ.', btn:'✅ Kɛ Nyɛ'} };
+    function setLang() { const l = document.getElementById('lang').value; const t = langs[l]; if(t){ document.querySelector('.consent-check label').innerHTML=`<strong>I agree</strong> ${t.agree}`; document.getElementById('submitBtn').textContent=t.btn; } localStorage.setItem('happy_lang',l); }
+    document.addEventListener('DOMContentLoaded',()=>{ document.getElementById('lang').value=localStorage.getItem('happy_lang')||'en'; setLang(); });
+    
+    document.getElementById('form').onsubmit = async (e) => {
+      e.preventDefault();
+      if(!hasSig){ showStatus(' Please sign above','error'); canvas.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+      if(!document.getElementById('agree').checked){ showStatus('❌ Check consent box','error'); return; }
+      
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true; btn.textContent = '⏳ Sending...';
+      showStatus('🔐 Processing...','success');
+      
+      try {
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({
+            name: document.getElementById('name').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            consentGiven: true,
+            timestamp: new Date().toISOString(),
+            signature: canvas.toDataURL('image/png'),
+            language: document.getElementById('lang').value
+          })
+        });
+        
+        if (!response.ok) throw new Error(`Server ${response.status}`);
+        const raw = await response.text();
+        const match = raw.match(/\{[\s\S]*\}/);
+        const result = match ? JSON.parse(match[0]) : JSON.parse(raw);
+        
+        if (result.status === 'success') {
+          showStatus(`✅ Submitted!<br><small>ID: ${result.submissionId}</small>`, 'success');
+          document.getElementById('form').reset();
+          ctx.clearRect(0,0,canvas.width,canvas.height); hasSig = false;
+          setTimeout(()=>document.querySelector('.header')?.scrollIntoView({behavior:'smooth'}), 2000);
+        } else { throw new Error(result.message || 'Submission failed'); }
+      } catch (err) {
+        console.error('Submit error:', err);
+        showStatus(`❌ ${err.message.includes('Failed to fetch') ? 'Network blocked. Check internet/extensions.' : err.message}`, 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = langs[document.getElementById('lang').value]?.btn || '✅ Submit Consent';
+      }
     };
-
-    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
-    script.async = true;
-    script.onerror = () => {
-      if (timedOut) return;
-      clearTimeout(timer);
-      cleanup();
-      reject(new Error('JSONP script load error'));
-    };
-
-    function cleanup() {
-      try { script.remove(); } catch (e) {}
-      try { delete window[cbName]; } catch (e) {}
-    }
-
-    const timer = setTimeout(() => {
-      timedOut = true;
-      cleanup();
-      reject(new Error('JSONP timeout'));
-    }, timeoutMs);
-
-    document.head.appendChild(script);
-  });
-}
-
-/* POST helper with fallback */
-async function postJsonWithFallback(payload) {
-  try {
-    console.log('Attempting fetch POST to backend...', BACKEND);
-    const res = await fetch(BACKEND, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    console.log('Fetch response status:', res.status, 'content-type:', res.headers.get('content-type'));
-    const json = await res.json();
-    return json;
-  } catch (fetchErr) {
-    console.warn('Fetch failed, attempting JSONP fallback:', fetchErr);
-    try {
-      const jsonpData = await jsonpFallback(BACKEND);
-      console.log('JSONP fallback returned:', jsonpData);
-      return jsonpData;
-    } catch (jsonpErr) {
-      console.error('JSONP fallback failed:', jsonpErr);
-      throw jsonpErr;
-    }
-  }
-}
-
-/* Form submit */
-const form = document.getElementById('consentForm');
-const statusEl = document.getElementById('status');
-
-form.addEventListener('submit', async (ev) => {
-  ev.preventDefault();
-  statusEl.style.display='block'; statusEl.className='status'; statusEl.textContent='Processing...';
-
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const consentGiven = document.getElementById('consentGiven').checked;
-  const language = document.getElementById('langToggle').value;
-
-  if (!name || !phone || !consentGiven) {
-    statusEl.className='status error'; statusEl.textContent='Please complete required fields and accept consent.';
-    return;
-  }
-  if (canvasIsBlank()) {
-    statusEl.className='status error'; statusEl.textContent='Please provide your signature.';
-    return;
-  }
-
-  const payload = {
-    name, phone, email, consentGiven, language,
-    timestamp: new Date().toISOString(),
-    signature: canvas.toDataURL('image/png')
-  };
-
-  try {
-    const json = await postJsonWithFallback(payload);
-    if (json && json.status === 'success') {
-      statusEl.className='status success'; statusEl.textContent = `✅ Submitted! ID: ${json.submissionId}`;
-      form.reset(); ctx.clearRect(0,0,canvas.width,canvas.height);
-      window.scrollTo({top:0,behavior:'smooth'});
-      setTimeout(()=>{ statusEl.style.display='none'; }, 7000);
-    } else {
-      statusEl.className='status error'; statusEl.textContent = `❌ ${json?.message || 'Submission failed'}`;
-    }
-  } catch (err) {
-    statusEl.className='status error'; statusEl.textContent = '❌ Network error: ' + (err.message || err);
-  }
-});
-
-/* Diagnostic buttons */
-document.getElementById('diagBtn').addEventListener('click', async () => {
-  console.log('Running browser POST diagnostic to backend...');
-  const payload = { name: 'Diag Test', phone: '0240000000', consentGiven: true, timestamp: new Date().toISOString() };
-  try {
-    const res = await postJsonWithFallback(payload);
-    console.log('Diagnostic result:', res);
-    alert('Diagnostic complete — check Console for details.');
-  } catch (e) {
-    console.error('Diagnostic failed:', e);
-    alert('Diagnostic failed — check Console for details.');
-  }
-});
-
-document.getElementById('diagJsonp').addEventListener('click', async () => {
-  const testUrl = BACKEND + (BACKEND.includes('?') ? '&' : '?') + 'callback=cb_test';
-  console.log('Testing JSONP URL (will follow redirects in browser):', testUrl);
-  try {
-    const data = await jsonpFallback(BACKEND, 10000);
-    console.log('JSONP test returned:', data);
-    alert('JSONP test complete — check Console for details.');
-  } catch (err) {
-    console.error('JSONP test failed:', err);
-    alert('JSONP test failed — check Console for details.');
-  }
-});
-</script>
+    
+    function showStatus(msg, type) { status.innerHTML=msg; status.className=`status-${type}`; status.style.display='block'; if(type==='success') setTimeout(()=>{if(status.className.includes('success'))status.style.display='none';},10000); }
+  </script>
 </body>
 </html>
