@@ -133,7 +133,7 @@
   </div>
 
   <script>
-    // ✅ YOUR PERMANENT WEB APP URL - PRE-INSERTED
+    // ✅ YOUR PERMANENT WEB APP URL
     const API = 'https://script.google.com/macros/s/AKfycbwOJGkeb5cUERtNF0UVAoljCzZE6wnTSrk4lpzQtDzYXgpyhiZWhdUXph7OdrbAbf9l/exec';
     
     const canvas = document.getElementById('sig');
@@ -199,7 +199,8 @@
         const result = match ? JSON.parse(match[0]) : JSON.parse(raw);
         
         if (result.status === 'success') {
-          showStatus(`✅ Submitted!<br><small>ID: ${result.submissionId}</small>`, 'success');
+          const emailMsg = document.getElementById('email').value.trim() ? `<br><small>✅ Email sent</small>` : '';
+          showStatus(`✅ Submitted!<br><small>ID: ${result.submissionId}</small>${emailMsg}`, 'success');
           document.getElementById('form').reset();
           ctx.clearRect(0,0,canvas.width,canvas.height); hasSig = false;
           setTimeout(()=>document.querySelector('.header')?.scrollIntoView({behavior:'smooth'}), 2000);
