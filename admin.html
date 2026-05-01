@@ -1,135 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>HAPPY Consent Dashboard</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAPPY Admin Dashboard</title>
   <style>
-    :root{--brand1:#4F46E5;--brand2:#7C3AED;--bg:#f9fafb}
-    body{margin:0;font-family:Inter,Arial;background:var(--bg);color:#111}
-    header{background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#fff;padding:14px}
-    main{max-width:1200px;margin:16px auto;padding:0 12px}
-    .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-    .stat{flex:1;min-width:140px;background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(15,23,42,0.06);text-align:center}
-    #search{padding:10px;border-radius:8px;border:1px solid #e6e6f0;width:320px}
-    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
-    th,td{padding:10px;border-bottom:1px solid #eef2ff;text-align:left}
-    thead th{background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#fff;position:sticky;top:0}
-    .empty{padding:28px;text-align:center;color:#6b7280}
-    footer{margin:18px auto;text-align:center;color:#6b7280}
+    :root{--g:linear-gradient(135deg,#4F46E5,#7C3AED)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,sans-serif;background:#F3F4F6;padding:20px}
+    .wrap{max-width:1100px;margin:0 auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+    .head{background:var(--g);color:#fff;padding:16px;border-radius:8px;margin-bottom:20px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .stat{background:var(--g);color:#fff;padding:14px;border-radius:8px;text-align:center}
+    .stat b{font-size:1.8rem}
+    .filters{margin-bottom:16px}
+    .filters input{padding:10px;border:2px solid #E5E7EB;border-radius:6px;width:100%;max-width:400px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;text-align:left;border-bottom:1px solid #E5E7EB}
+    th{background:var(--g);color:#fff;position:sticky;top:0}
+    tr:hover{background:#F9FAFB}
+    .loading{text-align:center;padding:40px;color:#6B7280}
+    .error{background:#FEE2E2;color:#991B1B;padding:14px;border-radius:8px;margin-bottom:16px}
+    .refresh{background:var(--g);color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;font-weight:600;margin-bottom:16px}
+    @media(max-width:768px){table{font-size:.85rem}th,td{padding:8px}.stats{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
 <body>
-  <header>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div><img src="icon-192.png" alt="" style="height:40px;vertical-align:middle" onerror="this.style.display='none'"><strong style="margin-left:8px">HAPPY Consent Dashboard</strong></div>
-      <div style="color:#fff">Contact: 📞 0270 176611 | redro@jobberman.com.gh</div>
-    </div>
-  </header>
-
-  <main>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="stats" style="flex:1">
-        <div class="stat"><div class="small">Total</div><h2 id="total">0</h2></div>
-        <div class="stat"><div class="small">Today</div><h2 id="today">0</h2></div>
-        <div class="stat"><div class="small">This week</div><h2 id="week">0</h2></div>
-        <div class="stat"><div class="small">This month</div><h2 id="month">0</h2></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="search" placeholder="Search by name, phone, or ID">
-        <button id="refresh">Refresh</button>
-      </div>
-    </div>
-
-    <div style="background:#fff;border-radius:10px;padding:8px;box-shadow:0 6px 18px rgba(15,23,42,0.04)">
-      <div style="overflow:auto;max-height:62vh">
-        <table aria-label="Consent records">
-          <thead><tr><th>ID</th><th>Timestamp</th><th>Full Name</th><th>Phone</th><th>Email</th><th>Consent</th><th>Language</th></tr></thead>
-          <tbody id="tbody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-
-  <footer>Read-only • Data stored in Google Sheets • Privacy policy: <a href="https://mastercardfdn.org/privacy" target="_blank">mastercardfdn.org/privacy</a></footer>
-
-<script>
-const BACKEND = 'https://script.google.com/macros/s/AKfycbwAg-ji8eLfFLlX5v6wUrTRInavhhTPbExQSqIeXDwKdct53ekRKbdcyEiUQ-W5OWFfmA/exec';
-const REFRESH_MS = 60000;
-let submissions = [];
-
-const totalEl = document.getElementById('total');
-const todayEl = document.getElementById('today');
-const weekEl = document.getElementById('week');
-const monthEl = document.getElementById('month');
-const tbody = document.getElementById('tbody');
-const search = document.getElementById('search');
-const refreshBtn = document.getElementById('refresh');
-
-async function fetchStats() {
-  try {
-    const r = await fetch(`${BACKEND}?action=getStats`, {cache:'no-store'});
-    const j = await r.json();
-    if (j.status === 'success') {
-      totalEl.textContent = j.stats.total || 0;
-      todayEl.textContent = j.stats.today || 0;
-      weekEl.textContent = j.stats.week || 0;
-      monthEl.textContent = j.stats.month || 0;
+  <div class="wrap">
+    <div class="head"><h1>📊 HAPPY Admin</h1><p>Consent submissions dashboard</p></div>
+    <div class="stats" id="stats"></div>
+    <button class="refresh" onclick="load()">🔄 Refresh</button>
+    <div class="filters"><input type="text" id="q" placeholder="🔍 Search name, phone, or ID..." oninput="filter()"></div>
+    <div id="out"></div>
+  </div>
+  <script>
+    // ✅ YOUR PERMANENT WEB APP URL - PRE-INSERTED
+    const API='https://script.google.com/macros/s/AKfycbwOJGkeb5cUERtNF0UVAoljCzZE6wnTSrk4lpzQtDzYXgpyhiZWhdUXph7OdrbAbf9l/exec';
+    let data=[];
+    async function load(){
+      try{
+        const s=await fetch(API+'?action=getStats').then(r=>r.json());
+        if(s.status==='success'){
+          document.getElementById('stats').innerHTML=`
+            <div class="stat"><b>${s.stats.total}</b><div>Total</div></div>
+            <div class="stat"><b>${s.stats.today}</b><div>Today</div></div>
+            <div class="stat"><b>${s.stats.week}</b><div>Week</div></div>
+            <div class="stat"><b>${s.stats.month}</b><div>Month</div></div>`;
+        }
+        const r=await fetch(API+'?action=getSubmissions').then(r=>r.json());
+        if(r.status==='success'){data=r.data;render(data);}
+      }catch(e){document.getElementById('out').innerHTML=`<p class="error">❌ ${e.message}</p>`;}
     }
-  } catch (e) { console.warn('Stats error', e); }
-}
-
-async function fetchSubmissions() {
-  try {
-    const r = await fetch(`${BACKEND}?action=getSubmissions`, {cache:'no-store'});
-    const j = await r.json();
-    if (j.status === 'success' && Array.isArray(j.data)) {
-      submissions = j.data.map(normalize);
-      render();
-    } else {
-      tbody.innerHTML = `<tr><td colspan="7" class="empty">No records</td></tr>`;
+    function render(rows){
+      if(!rows.length){document.getElementById('out').innerHTML='<p class="loading">No submissions yet</p>';return;}
+      document.getElementById('out').innerHTML=`<table><thead><tr><th>ID</th><th>Time</th><th>Name</th><th>Phone</th><th>Email</th><th>Consent</th></tr></thead><tbody>
+        ${rows.map(r=>`<tr><td><b>${r['Submission ID']}</b></td><td>${new Date(r['Timestamp']).toLocaleString()}</td><td>${r['Full Name']}</td><td>${r['Phone']}</td><td>${r['Email']||'-'}</td><td>${r['Consent']}</td></tr>`).join('')}
+      </tbody></table>`;
     }
-  } catch (e) {
-    console.error('Fetch error', e);
-    tbody.innerHTML = `<tr><td colspan="7" class="empty">Network error</td></tr>`;
-  }
-}
-
-function normalize(row) {
-  return {
-    id: row['Submission ID'] || row['SubmissionId'] || row[0] || '',
-    timestamp: (row['Timestamp'] || row[1] || '').toString(),
-    name: row['Full Name'] || row['FullName'] || row[2] || '',
-    phone: row['Phone'] || row[3] || '',
-    email: row['Email'] || row[4] || '',
-    consent: row['Consent'] || row[5] || '',
-    language: row['Language'] || row[6] || ''
-  };
-}
-
-function render() {
-  const q = (search.value || '').trim().toLowerCase();
-  const filtered = q ? submissions.filter(s => (s.name||'').toLowerCase().includes(q) || (s.phone||'').toLowerCase().includes(q) || (s.id||'').toLowerCase().includes(q)) : submissions;
-  if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="7" class="empty">No matching records</td></tr>`; return; }
-  tbody.innerHTML = filtered.map(r => `<tr>
-    <td>${escapeHtml(r.id)}</td>
-    <td>${escapeHtml(r.timestamp)}</td>
-    <td>${escapeHtml(r.name)}</td>
-    <td>${escapeHtml(r.phone)}</td>
-    <td>${escapeHtml(r.email)}</td>
-    <td>${escapeHtml(r.consent)}</td>
-    <td>${escapeHtml(r.language)}</td>
-  </tr>`).join('');
-}
-
-function escapeHtml(s){ if (s==null) return ''; return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-search.addEventListener('input', () => render());
-refreshBtn.addEventListener('click', () => manualRefresh());
-
-async function manualRefresh(){ refreshBtn.disabled=true; refreshBtn.textContent='Refreshing…'; await Promise.all([fetchStats(), fetchSubmissions()]); refreshBtn.disabled=false; refreshBtn.textContent='Refresh'; }
-
-(async function init(){ await Promise.all([fetchStats(), fetchSubmissions()]); setInterval(()=>{ fetchStats(); fetchSubmissions(); }, REFRESH_MS); })();
-</script>
+    function filter(){
+      const q=document.getElementById('q').value.toLowerCase();
+      render(data.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))));
+    }
+    load();
+    setInterval(load,60000);
+  </script>
 </body>
 </html>
