@@ -52,7 +52,7 @@ const CONFIG = {
 // ===== STATE =====
 let formState = {
   collectorName: '', deviceId: '', regionCounter: {}, globalSequence: 0, isSubmitting: false, isSyncing: false, isAdmin: false, adminPassword: '',
-  token: '', participant: null, lockedSections: new Set(), entryMode: '', consentSigned: false, consentDrawing: false, consentContext: null
+  token: '', participant: null, lockedSections: new Set(), entryMode: '', selectedContinuationStage: '', consentSigned: false, consentDrawing: false, consentContext: null
 };
 
 // ===== INITIALIZATION =====
@@ -196,6 +196,26 @@ async function startNewParticipant() {
 }
 
 async function continueToStage(stage) {
+  if (formState.selectedContinuationStage !== stage || document.getElementById('entryContinuationBox')?.classList.contains('hidden')) {
+    showContinuationInput(stage);
+    return;
+  }
+
+  await submitSelectedContinuation();
+}
+
+function showContinuationInput(stage) {
+  formState.selectedContinuationStage = stage;
+  const box = document.getElementById('entryContinuationBox');
+  const input = document.getElementById('entryParticipantIdInput');
+  const button = document.getElementById('entryContinuationBtn');
+  box?.classList.remove('hidden');
+  if (button) button.textContent = stage === 'capacity' ? 'Continue to Capacity Building' : 'Continue to Job Placement';
+  input?.focus();
+}
+
+async function submitSelectedContinuation() {
+  const stage = formState.selectedContinuationStage || 'capacity';
   const participantInput = document.getElementById('entryParticipantIdInput');
   const participantId = String(participantInput?.value || formState.participant?.participantId || '').trim().toUpperCase();
   if (!participantId) {

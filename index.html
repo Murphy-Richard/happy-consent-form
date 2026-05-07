@@ -66,9 +66,10 @@
         <p>Select the correct stage so the participant continues on the same record.</p>
       </div>
 
-      <div class="entry-token-box">
+      <div id="entryContinuationBox" class="entry-token-box hidden">
         <label class="field-label">Participant ID for continuation</label>
         <input type="text" id="entryParticipantIdInput" class="field-input" placeholder="Example: HAPPY-2026-000004">
+        <button type="button" id="entryContinuationBtn" class="btn-primary entry-continue-btn" onclick="submitSelectedContinuation()">Continue</button>
       </div>
 
       <div class="entry-choice-grid">
