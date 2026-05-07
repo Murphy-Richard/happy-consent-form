@@ -1261,6 +1261,27 @@ function resetForm() {
   formState.isSubmitting = false;
 }
 
+function returnToWorkflowStart() {
+  resetForm();
+  formState.token = '';
+  formState.participant = null;
+  formState.lockedSections = new Set();
+  formState.entryMode = '';
+  formState.selectedContinuationStage = '';
+  formState.consentSigned = false;
+  localStorage.removeItem('happyContinuationToken');
+
+  document.getElementById('mainForm')?.classList.add('hidden');
+  document.getElementById('consentStep')?.classList.add('hidden');
+  document.getElementById('successScreen')?.classList.remove('show');
+  document.getElementById('entryChoiceScreen')?.classList.remove('hidden');
+  document.getElementById('entryContinuationBox')?.classList.add('hidden');
+  const participantInput = document.getElementById('entryParticipantIdInput');
+  if (participantInput) participantInput.value = '';
+  clearConsentSignature();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 async function submitCvDecision(hasCv) {
   const participantId = document.getElementById('participantId').value || formState.participant?.participantId;
   if (!participantId) {
