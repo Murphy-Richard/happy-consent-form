@@ -1,227 +1,917 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Jobberman Ghana - HAPPY Program Consent</title>
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <style>
-    :root{--blue:#4F46E5;--purple:#7C3AED;--grad:linear-gradient(135deg,var(--blue),var(--purple));--light:#F9FAFB;--border:#E5E7EB;--text:#111827;--muted:#6B7280}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:system-ui,-apple-system,sans-serif;line-height:1.6;color:var(--text);background:var(--grad);min-height:100vh;padding:16px}
-    .container{max-width:850px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
-    .header{background:var(--grad);color:#fff;padding:24px;text-align:center;position:relative}
-    .logo{width:80px;height:80px;background:#fff;border-radius:12px;padding:8px;margin-bottom:12px;object-fit:contain}
-    .header h1{font-size:1.6rem;margin-bottom:4px;font-weight:700}
-    .header h2{font-size:1.1rem;opacity:.95;margin-bottom:2px;font-weight:600}
-    .header p{font-size:.9rem;opacity:.9}
-    .lang-select{position:absolute;top:12px;right:12px}
-    .lang-select select{padding:6px 10px;border:2px solid rgba(255,255,255,.3);border-radius:6px;background:rgba(255,255,255,.2);color:#fff;font-size:.85rem;cursor:pointer}
-    .content{padding:20px}
-    .intro{background:var(--light);border-left:4px solid var(--blue);padding:14px;margin-bottom:16px;border-radius:0 6px 6px 0;font-size:.9rem;line-height:1.6}
-    .consent-box{background:#F3F4F6;border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;max-height:300px;overflow-y:auto;font-size:.9rem;line-height:1.6}
-    .consent-box h3{color:var(--blue);margin:12px 0 6px;font-size:1rem;font-weight:600}
-    .consent-box ul{padding-left:20px;margin:6px 0}
-    .consent-box li{margin-bottom:4px}
-    .consent-box a{color:var(--blue);text-decoration:none}
-    .form-group{margin-bottom:16px}
-    label{display:block;margin-bottom:6px;font-weight:600;font-size:.92rem}
-    input{width:100%;padding:10px 12px;border:2px solid var(--border);border-radius:6px;font-size:1rem;transition:border-color .2s}
-    input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,70,229,.1)}
-    small{color:var(--muted);font-size:.8rem;display:block;margin-top:4px}
-    .sig-box{border:2px dashed var(--border);border-radius:8px;padding:12px;background:#FAFAFA}
-    canvas{width:100%;height:160px;border:2px solid var(--border);border-radius:6px;background:#fff;touch-action:none;cursor:crosshair;display:block}
-    .sig-hint{font-size:.8rem;color:var(--muted);text-align:center;margin-top:6px}
-    .btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;margin-top:8px;transition:transform .1s}
-    .btn:active{transform:scale(.98)}
-    #clearSig{background:#E5E7EB;color:#374151}
-    #submitBtn{background:var(--grad);color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.4)}
-    #submitBtn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-    .consent-check{display:flex;align-items:flex-start;gap:10px;margin:18px 0;padding:14px;background:#EEF2FF;border-radius:8px;border:2px solid var(--blue)}
-    .consent-check input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
-    .consent-check label{margin:0;font-size:.9rem;line-height:1.5;cursor:pointer}
-    #status{padding:12px;border-radius:8px;margin:16px 0;text-align:center;font-weight:500;display:none;animation:slideIn .25s ease}
-    @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-    .status-success{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;display:block}
-    .status-error{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA;display:block}
-    .footer{background:var(--light);border-top:1px solid var(--border);padding:18px 20px 24px;text-align:center;position:relative}
-    .footer strong{color:var(--blue)}
-    .footer a{color:var(--blue);text-decoration:none}
-    .footer hr{border:none;border-top:1px solid var(--border);margin:12px 0}
-    .dev-sig{position:absolute;bottom:8px;right:16px;font-size:.6rem;color:#9CA3AF;pointer-events:none;user-select:none}
-    @media(max-width:640px){.header h1{font-size:1.4rem}.header h2{font-size:1rem}.content{padding:16px}canvas{height:140px}.btn-row{flex-direction:column}.dev-sig{position:static;text-align:center;margin-top:10px;display:block;width:100%}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1e40af">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HAPPY Program - Field Data Collection</title>
+<!-- Favicon & Icons -->
+<link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+<link rel="apple-touch-icon" href="favicon/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="lang-select">
-        <select id="lang" onchange="setLang()" aria-label="Select language">
-          <option value="en">English</option>
-          <option value="tw">Twi</option>
-          <option value="ha">Hausa</option>
-          <option value="ga">Ga</option>
-        </select>
-      </div>
-      <img src="icon-192.png" alt="Jobberman Ghana" class="logo" onerror="this.style.display='none'">
-      <h1>Jobberman Ghana</h1>
-      <h2>HAPPY Program</h2>
-      <p>Participant Consent Form</p>
+<body class="pb-16">
+<!-- NAVIGATION -->
+<nav class="navbar">
+  <div class="navbar-top">
+    <div class="collector-strip">
+      Collector: <span id="collectorDisplay">Not Set</span>
+      <button type="button" class="nav-admin-btn" onclick="showAdminLogin()">🔐 Admin</button>
     </div>
-    
-    <div class="content">
-      <div class="intro">
-        <strong>HAPPY Program</strong> collects data to improve agricultural youth programs. Your privacy is protected.
-      </div>
-      
-      <div class="consent-box">
-        <h3>1. Purpose</h3>
-        <p>We collect your personal data to analyze program progress, improve services, and monitor effectiveness of the Harnessing Agricultural Productivity and Prosperity for Youth program.</p>
-        <h3>2. Data Collected</h3>
-        <ul>
-          <li>Name, age, gender, contact details</li>
-          <li>Education, location, participation details</li>
-          <li>Refugee/displaced status, disability status</li>
-          <li>Feedback, surveys, audio-visual data</li>
-        </ul>
-        <h3>3. Data Sharing</h3>
-        <p>Shared with Agri-Impact Limited, Funding Partners, and approved data processors for monitoring and evaluation.</p>
-        <p>Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank" rel="noopener">mastercardfdn.org/privacy</a></p>
-        <h3>4. Your Rights</h3>
-        <p>Access, correct, delete, restrict, or port your data. Withdraw consent anytime without affecting program participation. Contact: <strong>+233 54 234 3168</strong></p>
-      </div>
-      
-      <form id="form" novalidate>
-        <!-- ✅ VENUE FIELD ADDED -->
-        <div class="form-group">
-          <label for="venue">Venue/Location of Engagement*</label>
-          <input type="text" id="venue" name="venue" required placeholder="e.g., Tamale Community Center" autocomplete="venue">
-        </div>
-        
-        <div class="form-group">
-          <label for="name">Full Name *</label>
-          <input type="text" id="name" name="name" required placeholder="Your full name as on ID" autocomplete="name">
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone Number *</label>
-          <input type="tel" id="phone" name="phone" required placeholder="+233 XX XXX XXXX" autocomplete="tel">
-          <small>Format: +233 24 123 4567</small>
-        </div>
-        <div class="form-group">
-          <label for="email">Email (Optional)</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
-          <small>Receive confirmation email</small>
-        </div>
-        <div class="form-group">
-          <label>Signature *</label>
-          <div class="sig-box">
-            <canvas id="sig" aria-label="Draw your signature here"></canvas>
-            <p class="sig-hint">Use finger or mouse to sign above</p>
-            <button type="button" class="btn" id="clearSig">🔄 Clear Signature</button>
-          </div>
-        </div>
-        <div class="consent-check">
-          <input type="checkbox" id="agree" name="consent" required>
-          <label for="agree"><strong>I agree</strong> to share my data as described above. I confirm I have read and understood this form.</label>
-        </div>
-        <button type="submit" class="btn" id="submitBtn">✅ Submit Consent</button>
-      </form>
-      
-      <div id="status" role="alert" aria-live="polite"></div>
-    </div>
-    
-    <div class="footer">
-      <div><strong>📞 0270 176611</strong> | <strong>📧 redro@jobberman.com.gh</strong><br><small>Your data is protected. Questions? +233 54 234 3168</small></div>
-      <hr>
-      <small>Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank" rel="noopener">mastercardfdn.org/privacy</a></small>
-      <div class="dev-sig">Powered by: Murphy Richards - MERL Manager</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="setView('form')" id="tab-form">📝 Entry Form</button>
+      <button class="nav-tab" onclick="showAdminLogin()" id="tab-sheet">📊 Master Sheet</button>
     </div>
   </div>
 
-  <script>
-    // ✅ YOUR PERMANENT WEB APP URL
-    const API = 'https://script.google.com/macros/s/AKfycbwOJGkeb5cUERtNF0UVAoljCzZE6wnTSrk4lpzQtDzYXgpyhiZWhdUXph7OdrbAbf9l/exec';
-    
-    const canvas = document.getElementById('sig');
-    const ctx = canvas.getContext('2d');
-    const status = document.getElementById('status');
-    let drawing = false, hasSig = false;
-    
-    function setupCanvas() {
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr); ctx.lineWidth = 2.5; ctx.lineCap = ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#1a1a1a';
-    }
-    window.addEventListener('resize', setupCanvas); setupCanvas();
-    
-    function pos(e) {
-      const r = canvas.getBoundingClientRect();
-      return { x: (e.touches?.[0]?.clientX || e.clientX) - r.left, y: (e.touches?.[0]?.clientY || e.clientY) - r.top };
-    }
-    function start(e) { e.preventDefault(); drawing = true; hasSig = true; const p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
-    function move(e) { if (!drawing) return; e.preventDefault(); const p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
-    function end() { if (drawing) { ctx.closePath(); drawing = false; } }
-    
-    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move);
-    canvas.addEventListener('mouseup', end); canvas.addEventListener('mouseleave', end);
-    canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', move, {passive:false});
-    canvas.addEventListener('touchend', end); canvas.style.touchAction = 'none';
-    
-    document.getElementById('clearSig').onclick = () => { ctx.clearRect(0,0,canvas.width,canvas.height); hasSig = false; status.style.display = 'none'; };
-    
-    const langs = { en:{agree:'to share my data as described above. I confirm I have read and understood this form.', btn:'✅ Submit Consent'}, tw:{agree:'sɛ mma wɔde me nsɛm bɛhyɛ nsa.', btn:'✅ Bɔ Toe'}, ha:{agree:'a rika bayanina.', btn:'✅ Aika'}, ga:{agree:'mi yɛ mi yɛ.', btn:'✅ Kɛ Nyɛ'} };
-    function setLang() { const l = document.getElementById('lang').value; const t = langs[l]; if(t){ document.querySelector('.consent-check label').innerHTML=`<strong>I agree</strong> ${t.agree}`; document.getElementById('submitBtn').textContent=t.btn; } localStorage.setItem('happy_lang',l); }
-    document.addEventListener('DOMContentLoaded',()=>{ document.getElementById('lang').value=localStorage.getItem('happy_lang')||'en'; setLang(); });
-    
-    document.getElementById('form').onsubmit = async (e) => {
-      e.preventDefault();
-      if(!hasSig){ showStatus(' Please sign above','error'); canvas.scrollIntoView({behavior:'smooth',block:'center'}); return; }
-      if(!document.getElementById('agree').checked){ showStatus('❌ Check consent box','error'); return; }
+  <div class="navbar-center">
+    <img
+      src="assets/jobberman-ghana-logo.jpg"
+      alt="Jobberman Ghana"
+      class="nav-logo-img"
+      onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';"
+    >
+    <div id="logoFallback" class="nav-logo-fallback" style="display:none;">JB</div>
+    <h1>JOBBERMAN GHANA</h1>
+    <h2>HAPPY Program</h2>
+    <p>Participants Registration Form</p>
+    <div class="collector-badge">
+      Collector: <span id="collectorDisplaySub">Not Set</span>
+    </div>
+  </div>
+</nav>
+
+<!-- STATUS BAR -->
+<div id="statusBar" class="status-bar hidden mx-4 mt-4">
+  <span id="statusText"></span>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div class="max-w-7xl mx-auto px-4 mt-4">
+  
+  <!-- FORM VIEW -->
+  <div id="view-form">
+    <section id="entryChoiceScreen" class="entry-choice-screen">
+      <div class="entry-choice-header">
+        <span class="entry-choice-kicker">Participant workflow</span>
+        <h2>How do you want to continue?</h2>
+        <p>Select the correct stage so the participant continues on the same record.</p>
+      </div>
+
+      <div class="entry-token-box">
+        <label class="field-label">Participant ID for continuation</label>
+        <input type="text" id="entryParticipantIdInput" class="field-input" placeholder="Example: HAPPY-2026-000004">
+      </div>
+
+      <div class="entry-choice-grid">
+        <button type="button" class="entry-choice-card blue" onclick="startNewParticipant()">
+          <span class="entry-choice-icon">1</span>
+          <strong>New Participant</strong>
+          <small>Start or complete participant information after consent.</small>
+        </button>
+        <button type="button" class="entry-choice-card purple" onclick="continueToStage('capacity')">
+          <span class="entry-choice-icon">2</span>
+          <strong>Continue to Capacity Building</strong>
+          <small>Load the existing participant and open the training section.</small>
+        </button>
+        <button type="button" class="entry-choice-card green" onclick="continueToStage('placement')">
+          <span class="entry-choice-icon">3</span>
+          <strong>Continue to Job Placement</strong>
+          <small>Load the existing participant and open the placement section.</small>
+        </button>
+      </div>
+    </section>
+
+    <section id="consentStep" class="consent-step hidden">
+      <div class="form-section consent-section">
+        <div class="section-header">
+          <h2 class="section-title"><span class="section-badge">C</span> Participant Consent</h2>
+          <button type="button" class="btn-secondary" onclick="backToEntryChoice()">Back</button>
+        </div>
+
+        <div class="consent-intro">
+          <strong>HAPPY Program</strong> collects participant data to support training, placement, reporting, and program improvement. Consent is required before registration.
+        </div>
+
+        <div class="consent-text-box">
+          <h3>Purpose</h3>
+          <p>We collect personal data to analyze program progress, improve services, and monitor the effectiveness of the Harnessing Agricultural Productivity and Prosperity for Youth program.</p>
+          <h3>Data Collected</h3>
+          <ul>
+            <li>Name, age, gender, contact details, education, location, participation details, CV status, and employability information.</li>
+            <li>Refugee/displaced status, disability status, training details, and job placement details where applicable.</li>
+          </ul>
+          <h3>Data Sharing</h3>
+          <p>Data may be shared with Jobberman Ghana, Agri-Impact Limited, funding partners, and approved data processors for monitoring, evaluation, and program delivery.</p>
+          <h3>Your Rights</h3>
+          <p>You may request access, correction, restriction, or withdrawal of consent where applicable. Privacy Policy: <a href="https://mastercardfdn.org/privacy/" target="_blank" rel="noopener">mastercardfdn.org/privacy</a></p>
+        </div>
+
+        <form id="consentForm" novalidate>
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label required">Venue/Location of Engagement</label>
+              <input type="text" id="consentVenue" class="field-input" required placeholder="e.g., Tamale Community Center">
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Full Name</label>
+              <input type="text" id="consentName" class="field-input" required placeholder="Participant full name">
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Phone Number</label>
+              <input type="tel" id="consentPhone" class="field-input" required placeholder="+233 24 123 4567">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Email</label>
+              <input type="email" id="consentEmail" class="field-input" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="consent-signature">
+            <label class="field-label required">Signature</label>
+            <canvas id="consentSig" aria-label="Draw participant signature"></canvas>
+            <p>Use finger or mouse to sign above.</p>
+            <button type="button" class="btn-secondary" id="clearConsentSig">Clear Signature</button>
+          </div>
+
+          <label class="consent-checkline">
+            <input type="checkbox" id="consentAgree" required>
+            <span><strong>I agree</strong> to share my data as described above. I confirm I have read and understood this form.</span>
+          </label>
+
+          <div id="consentStatus" class="status-bar hidden"></div>
+          <button type="submit" id="consentSubmitBtn" class="btn-primary">Submit Consent and Continue</button>
+        </form>
+      </div>
+    </section>
+
+    <form id="mainForm" class="hidden" onsubmit="handleSubmit(event)" novalidate>
       
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true; btn.textContent = '⏳ Sending...';
-      showStatus('🔐 Processing...','success');
-      
-      try {
-        const response = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            // ✅ VENUE INCLUDED IN PAYLOAD
-            venue: document.getElementById('venue').value.trim(),
-            name: document.getElementById('name').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            consentGiven: true,
-            timestamp: new Date().toISOString(),
-            signature: canvas.toDataURL('image/png'),
-            language: document.getElementById('lang').value
-          })
-        });
+      <!-- SECTION A: SUBMISSION META -->
+      <div class="form-section">
+        <div class="section-header">
+          <h2 class="section-title"><span class="section-badge">A</span> Submission Information</h2>
+          <span id="subIdDisplay" class="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded">SUB-AUTO</span>
+        </div>
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Submission ID <span class="auto-badge">Auto</span></label>
+            <input type="text" id="submissionId" class="field-input readonly" readonly>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Collector Name</label>
+            <input type="text" id="collectorName" class="field-input" required placeholder="Your name">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Device ID <span class="auto-badge">Auto</span></label>
+            <input type="text" id="deviceId" class="field-input readonly" readonly>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Timestamp <span class="auto-badge">Auto</span></label>
+            <input type="text" id="submissionTimestamp" class="field-input readonly" readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION B: PARTICIPANT INFORMATION -->
+      <div class="form-section" style="border-top-color: #3b82f6;">
+        <h2 class="section-title"><span class="section-badge" style="background:#3b82f6">B</span> Participant Information</h2>
         
-        if (!response.ok) throw new Error(`Server ${response.status}`);
-        const raw = await response.text();
-        const match = raw.match(/\{[\s\S]*\}/);
-        const result = match ? JSON.parse(match[0]) : JSON.parse(raw);
+        <!-- IDs & Partner -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Participant ID <span class="auto-badge">Auto</span></label>
+            <input type="text" id="participantId" class="field-input readonly" readonly placeholder="Will auto-generate">
+          </div>
+          <div class="field-group">
+            <label class="field-label">HAMIS ID <span class="auto-badge">Auto</span></label>
+            <input type="text" id="hamisId" class="field-input readonly" readonly placeholder="Will auto-generate">
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Onboarding Date</label>
+            <input type="date" id="onboardingDate" class="field-input" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Implementing Partner</label>
+            <select id="implementingPartner" class="field-input" required onchange="onPartnerChange()">
+              <option value="">Select Partner</option>
+              <option value="Jobberman">Jobberman</option>
+              <option value="Agrico">Agrico</option>
+              <option value="YouthEmpower">YouthEmpower</option>
+              <option value="SkillsGH">SkillsGH</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label required">Region</label>
+            <select id="region" class="field-input" required onchange="populateDistricts('region','district'); updateIds();">
+              <option value="">Select Region</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">District</label>
+            <select id="district" class="field-input" required disabled>
+              <option value="">Select District</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Community</label>
+            <input type="text" id="community" class="field-input" placeholder="Town/Community">
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Location Status</label>
+            <select id="locationStatus" class="field-input" required>
+              <option value="">Select</option>
+              <option value="Urban">Urban</option>
+              <option value="Peri-Urban">Peri-Urban</option>
+              <option value="Rural">Rural</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Personal Details -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label required">Surname</label>
+            <input type="text" id="surname" class="field-input" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">First Name</label>
+            <input type="text" id="firstName" class="field-input" required>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Other Name(s)</label>
+            <input type="text" id="otherNames" class="field-input">
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Sex</label>
+            <select id="sex" class="field-input" required>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label required">Date of Birth</label>
+            <input type="date" id="dob" class="field-input" required onchange="calculateAge()">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Age <span class="auto-badge">Calc</span></label>
+            <input type="text" id="age" class="field-input readonly" readonly>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Age Group <span class="auto-badge">Auto</span></label>
+            <input type="text" id="participantTypeAge" class="field-input readonly" readonly>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Telephone</label>
+            <input type="tel" id="telephone" class="field-input" required placeholder="0244111111" onblur="validatePhone(this)">
+          </div>
+        </div>
+
+        <!-- ID & Special Status -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">ID Type</label>
+            <select id="idType" class="field-input" onchange="handleIdTypeChange()">
+              <option value="">Select</option>
+              <option value="Ghana Card">Ghana Card</option>
+              <option value="Voter's ID">Voter's ID</option>
+              <option value="Passport">Passport</option>
+              <option value="National ID">National ID</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Ghana Card ID</label>
+            <input type="text" id="ghanaCardId" class="field-input" placeholder="GHA-XXXXXXXXX-X" oninput="formatGhanaCard(this)">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Voter's ID</label>
+            <input type="text" id="voterId" class="field-input" placeholder="10 characters">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Refugee Status</label>
+            <select id="refugeeStatus" class="field-input" onchange="toggleRefugeeField()">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+        </div>
+        <div id="nationalityField" class="field-group hidden">
+          <label class="field-label">Nationality (if Refugee)</label>
+          <input type="text" id="nationality" class="field-input">
+        </div>
+
+        <!-- Displacement Fields (NEW) -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Displacement Status</label>
+            <select id="displacementStatus" class="field-input" onchange="toggleDisplacementFields()">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div id="displacementReasonField" class="field-group hidden">
+            <label class="field-label">Reason for Displacement</label>
+            <select id="displacementReason" class="field-input">
+              <option value="">Select</option>
+              <option value="War/Conflict">War/Conflict</option>
+              <option value="Flood">Flood</option>
+              <option value="Fire">Fire</option>
+              <option value="Natural Disaster">Other Natural Disasters</option>
+              <option value="Non-Natural">Other Non-Natural Disasters</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div id="originalCommunityField" class="field-group hidden">
+            <label class="field-label">Original Community</label>
+            <input type="text" id="originalCommunity" class="field-input">
+          </div>
+          <div id="hostCommunityField" class="field-group hidden">
+            <label class="field-label">Host Community (Current)</label>
+            <input type="text" id="hostCommunity" class="field-input">
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Disability Status</label>
+            <select id="disabilityStatus" class="field-input" onchange="toggleDisabilityField()">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div id="disabilitySpecField" class="field-group hidden">
+            <label class="field-label">Specify Disability</label>
+            <select id="disabilitySpecify" class="field-input">
+              <option value="">Select</option>
+              <option value="Hearing">Hearing</option>
+              <option value="Visual">Visual</option>
+              <option value="Speech">Speech</option>
+              <option value="Mobility">Mobility</option>
+              <option value="Albinism">Albinism</option>
+              <option value="Deaf-Blindness">Deaf-Blindness</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Education & Employment -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label required">Education Level</label>
+            <select id="educationLevel" class="field-input" required>
+              <option value="">Select</option>
+              <option value="None">None</option>
+              <option value="Primary">Primary</option>
+              <option value="JHS">JHS</option>
+              <option value="SHS">SHS</option>
+              <option value="Vocational">Vocational</option>
+              <option value="Technical">Technical</option>
+              <option value="College">College</option>
+              <option value="University">University</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label required">Employment Status</label>
+            <select id="employmentStatus" class="field-input" required onchange="toggleBaselineEmploymentFields()">
+              <option value="">Select</option>
+              <option value="Employed">Employed</option>
+              <option value="Unemployed">Unemployed</option>
+              <option value="Casual Worker">Casual Worker</option>
+              <option value="Student">Student</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="baselineEmploymentFields" class="conditional-box">
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Current Occupation</label>
+            <input type="text" id="currentOccupation" class="field-input" placeholder="e.g., Farmer, Trader">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Income (GHS)</label>
+            <select id="monthlyIncome" class="field-input">
+              <option value="">Select</option>
+              <option value="None">None</option>
+              <option value="1-200">1-200</option>
+              <option value="201-500">201-500</option>
+              <option value="501-700">501-700</option>
+              <option value="701-1000">701-1000</option>
+              <option value="1001-1200">1001-1200</option>
+              <option value="1201-1500">1201-1500</option>
+              <option value="1501-1700">1501-1700</option>
+              <option value="1701-2000">1701-2000</option>
+              <option value="Above 2000">Above 2000</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Income Frequency</label>
+            <select id="incomeFrequency" class="field-input">
+              <option value="">Select</option>
+              <option value="Daily">Daily</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Baseline Employment Cascade (NEW - from your list) -->
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Sector</label>
+            <select id="sector" class="field-input" onchange="populateIndustries()">
+              <option value="">Select</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Non-Agriculture">Non-Agriculture</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Industry</label>
+            <select id="industry" class="field-input" disabled onchange="populateJobTypes()">
+              <option value="">Select</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Job Type</label>
+            <select id="jobType" class="field-input" disabled onchange="populateJobRoles()">
+              <option value="">Select</option>
+              <option value="Management">Management</option>
+              <option value="Technical">Technical</option>
+              <option value="Administrative">Administrative</option>
+              <option value="Support">Support</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Job Role</label>
+            <select id="jobRole" class="field-input" disabled>
+              <option value="">Select</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-grid">
+          <div class="field-group">
+            <label class="field-label">Work Region</label>
+            <select id="workRegion" class="field-input" onchange="populateDistricts('workRegion','workDistrict')">
+              <option value="">Select Region</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Work District</label>
+            <select id="workDistrict" class="field-input" disabled>
+              <option value="">Select District</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Work Community/Town</label>
+            <input type="text" id="workCommunity" class="field-input">
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- SECTION C: CAPACITY BUILDING -->
+      <div class="form-section purple">
+        <h2 class="section-title"><span class="section-badge purple">C</span> Capacity Building</h2>
         
-        if (result.status === 'success') {
-          const emailMsg = document.getElementById('email').value.trim() ? `<br><small>✅ Email sent</small>` : '';
-          showStatus(`✅ Submitted!<br><small>ID: ${result.submissionId}</small>${emailMsg}`, 'success');
-          document.getElementById('form').reset();
-          ctx.clearRect(0,0,canvas.width,canvas.height); hasSig = false;
-          setTimeout(()=>document.querySelector('.header')?.scrollIntoView({behavior:'smooth'}), 2000);
-        } else { throw new Error(result.message || 'Submission failed'); }
-      } catch (err) {
-        console.error('Submit error:', err);
-        showStatus(`❌ ${err.message.includes('Failed to fetch') ? 'Network blocked. Check internet/extensions.' : err.message}`, 'error');
-      } finally {
-        btn.disabled = false; btn.textContent = langs[document.getElementById('lang').value]?.btn || '✅ Submit Consent';
-      }
-    };
-    
-    function showStatus(msg, type) { status.innerHTML=msg; status.className=`status-${type}`; status.style.display='block'; if(type==='success') setTimeout(()=>{if(status.className.includes('success'))status.style.display='none';},10000); }
-  </script>
+        <div class="conditional-trigger purple">
+          <label class="field-label required">Have you been trained by <span id="partnerNameDisplay">the implementing partner</span>?</label>
+          <div class="flex gap-4 mt-1">
+            <label class="text-xs font-bold"><input type="radio" name="tr_check" value="Yes" onclick="toggleCapacityFields(true)"> YES</label>
+            <label class="text-xs font-bold"><input type="radio" name="tr_check" value="No" onclick="toggleCapacityFields(false)" checked> NO</label>
+          </div>
+        </div>
+        
+        <div id="capacityFields" class="conditional-box">
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label required">Training Start Date</label>
+              <input type="date" id="trainingStartDate" class="field-input">
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Training End Date</label>
+              <input type="date" id="trainingEndDate" class="field-input">
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Training Location</label>
+              <input type="text" id="trainingLocation" class="field-input" placeholder="Venue/Location">
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Mode of Training</label>
+              <select id="trainingMode" class="field-input" required disabled onchange="toggleTrainingModeFields()">
+                <option value="">Select</option>
+                <option value="In-person">In-person</option>
+                <option value="Virtual">Virtual</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Virtual Training Follow-up -->
+          <div id="virtualTrainingFields" class="field-group hidden" style="background:#f0f9ff;padding:0.75rem;border-radius:0.5rem;margin:0.5rem 0;border-left:3px solid #7c3aed">
+            <label class="field-label" style="font-weight:700;color:#7c3aed">🖥️ Virtual Training Details</label>
+            <div class="field-group" style="margin-top:0.5rem">
+              <label class="field-label">Virtual Platform Used</label>
+              <select id="virtualPlatform" class="field-input">
+                <option value="">Select</option>
+                <option value="Google Meet">Google Meet</option>
+                <option value="Microsoft Teams">Teams</option>
+                <option value="Zoom">Zoom</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label">Trainer Type</label>
+              <select id="trainerType" class="field-input">
+                <option value="">Select</option>
+                <option value="Internal">Internal</option>
+                <option value="External">External</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Training Partner</label>
+              <select id="trainingPartner" class="field-input">
+                <option value="">Select</option>
+                <option value="Jobberman">Jobberman</option>
+                <option value="Agrico">Agrico</option>
+                <option value="TVET Authority">TVET Authority</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Completion Status</label>
+              <select id="completionStatus" class="field-input">
+                <option value="">Select</option>
+                <option value="Completed">Completed</option>
+                <option value="Dropped">Dropped</option>
+                <option value="Ongoing">Ongoing</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Certificate Issued</label>
+              <select id="certificateIssued" class="field-input">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label">Training Modules Completed (Select all that apply)</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Soft Skills"> Soft Skills</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Employability"> Employability/Career Essential Skills</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Entrepreneurship"> Small Business & Entrepreneurship</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Digital Literacy"> Digital Literacy/ICT Skills</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Financial Management"> Financial Management</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Agri-Business"> Agri-Business</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Vocational Training"> Vocational Training</label>
+              <label class="checkbox-label"><input type="checkbox" name="modules" value="Other"> Other</label>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label">What Digital Literacy/ICT Skills training did you have?</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-label"><input type="checkbox" name="digitalSkills" value="Graphic Design"> Graphic Design</label>
+              <label class="checkbox-label"><input type="checkbox" name="digitalSkills" value="Web Development"> Web Development</label>
+              <label class="checkbox-label"><input type="checkbox" name="digitalSkills" value="Data Entry"> Data Entry</label>
+              <label class="checkbox-label"><input type="checkbox" name="digitalSkills" value="Social Media"> Social Media Management</label>
+              <label class="checkbox-label"><input type="checkbox" name="digitalSkills" value="Other"> Other</label>
+            </div>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label">What else would you like to be trained in?</label>
+            <textarea id="wishTraining" class="field-input textarea" placeholder="Describe desired training"></textarea>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label">Have you had any other training before this?</label>
+            <select id="previousTrainings" class="field-input" onchange="togglePreviousTrainingDetails()">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div id="previousTrainingDetails" class="field-group hidden">
+            <label class="field-label">Please describe previous training(s)</label>
+            <textarea id="previousTrainingDesc" class="field-input textarea" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION D: JOB PLACEMENT -->
+      <div class="form-section green">
+        <h2 class="section-title"><span class="section-badge green">D</span> Job Placement</h2>
+        
+        <div class="conditional-trigger green">
+          <label class="field-label required">Were you placed by <span id="partnerNameDisplay2">the implementing partner</span>?</label>
+          <div class="flex gap-4 mt-1">
+            <label class="text-xs font-bold"><input type="radio" name="pl_check" value="Yes" onclick="togglePlacementFields(true)"> YES</label>
+            <label class="text-xs font-bold"><input type="radio" name="pl_check" value="No" onclick="togglePlacementFields(false)" checked> NO</label>
+          </div>
+        </div>
+        
+        <div id="placementFields" class="conditional-box">
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label required">Placement Start Date</label>
+              <input type="date" id="placementStartDate" class="field-input">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Placement Region</label>
+              <select id="placementRegion" class="field-input" onchange="populateDistricts('placementRegion','placementDistrict')">
+                <option value="">Select Region</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Placement District</label>
+              <select id="placementDistrict" class="field-input" disabled>
+                <option value="">Select District</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Placement Community</label>
+              <input type="text" id="placementCommunity" class="field-input">
+            </div>
+          </div>
+          
+          <!-- Job Cascade for Placement -->
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label required">Sector</label>
+              <select id="plSector" class="field-input" required disabled onchange="populatePlacementIndustries()">
+                <option value="">Select</option>
+                <option value="Agriculture">Agriculture</option>
+                <option value="Non-Agriculture">Non-Agriculture</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Industry</label>
+              <select id="plIndustry" class="field-input" required disabled onchange="populatePlacementJobTypes()">
+                <option value="">Select</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Job Type</label>
+              <select id="plJobType" class="field-input" required disabled onchange="populatePlacementJobRoles()">
+                <option value="">Select</option>
+                <option value="Management">Management</option>
+                <option value="Technical">Technical</option>
+                <option value="Administrative">Administrative</option>
+                <option value="Support">Support</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Job Role</label>
+              <select id="plJobRole" class="field-input" required disabled>
+                <option value="">Select</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label required">Employment Type</label>
+              <select id="employmentType" class="field-input" required disabled>
+                <option value="">Select</option>
+                <option value="Wage">Wage Employment</option>
+                <option value="Self-Employment">Self-Employment</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Employment Category</label>
+              <select id="employmentCategory" class="field-input" required disabled>
+                <option value="">Select</option>
+                <option value="New">New Employment</option>
+                <option value="Improved">Improved Employment</option>
+                <option value="Additional">Additional Employment</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label required">Income (GHS)</label>
+              <select id="placementIncome" class="field-input" required disabled>
+                <option value="">Select</option>
+                <option value="None">None</option>
+                <option value="1-200">1-200</option>
+                <option value="201-500">201-500</option>
+                <option value="501-700">501-700</option>
+                <option value="701-1000">701-1000</option>
+                <option value="1001-1200">1001-1200</option>
+                <option value="1201-1500">1201-1500</option>
+                <option value="1501-1700">1501-1700</option>
+                <option value="1701-2000">1701-2000</option>
+                <option value="Above 2000">Above 2000</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Income Frequency</label>
+              <select id="placementIncomeFreq" class="field-input">
+                <option value="">Select</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label">Employer Name</label>
+              <input type="text" id="employerName" class="field-input">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contract Type</label>
+              <select id="contractType" class="field-input">
+                <option value="">Select</option>
+                <option value="Permanent">Permanent</option>
+                <option value="Fixed-term">Fixed-term</option>
+                <option value="Casual">Casual</option>
+                <option value="Contract">Contract</option>
+                <option value="Internship">Internship</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Work Hours/Week</label>
+              <input type="number" id="workHours" class="field-input" min="1" max="168" placeholder="e.g., 40">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Current Employment (if NOT placed) -->
+        <div id="currentEmploymentFields" class="conditional-box">
+          <div class="field-group">
+            <label class="field-label">Are you currently employed elsewhere?</label>
+            <select id="currentlyEmployed" class="field-input" onchange="toggleCurrentEmploymentDetails()">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div id="currentEmploymentDetails" class="hidden">
+            <div class="field-grid">
+              <div class="field-group">
+                <label class="field-label">Current Employer</label>
+                <input type="text" id="currentEmployer" class="field-input">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Current Job Role</label>
+                <input type="text" id="currentJobRoleAlt" class="field-input">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Current Income (GHS)</label>
+                <select id="currentIncomeAlt" class="field-input">
+                  <option value="">Select</option>
+                  <option value="None">None</option>
+                  <option value="1-200">1-200</option>
+                  <option value="201-500">201-500</option>
+                  <option value="501-1000">501-1000</option>
+                  <option value="1001+">1001+</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div id="syncStatusPanel" class="sync-status-panel online">
+        <div>
+          <span class="sync-label">Sync status</span>
+          <strong id="syncStatusTitle">Ready to submit</strong>
+        </div>
+        <span id="syncStatusDetail">Online. New records will save to Google Sheets.</span>
+      </div>
+      <div class="btn-group">
+        <button type="submit" id="submitBtn" class="btn-primary">Submit to Google Sheet</button>
+        <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
+      </div>
+    </form>
+
+    <!-- Success Screen -->
+    <div id="successScreen" class="success-screen">
+      <div class="success-icon">✓</div>
+      <div id="submissionStatusBadge" class="submission-status-badge submitted">Submitted</div>
+      <h3 id="submissionStatusTitle" class="success-title">Submission Successful!</h3>
+      <p id="submissionStatusMessage">Your response has been saved to Google Sheets.</p>
+      <p class="success-ref">Reference: <span id="refDisplay"></span></p>
+      <p id="submissionSyncDetail" class="submission-sync-detail"></p>
+      <div id="cvDecisionPanel" class="cv-decision-panel hidden">
+        <h4>Do you have a CV?</h4>
+        <p>This step is optional. You can upload a CV now, or open the sample CV templates folder if you need help creating one.</p>
+        <div class="btn-group">
+          <button type="button" class="btn-primary" onclick="submitCvDecision(true)">Yes, Upload CV</button>
+          <button type="button" class="btn-secondary" onclick="submitCvDecision(false)">No, Show Templates</button>
+        </div>
+        <div id="cvUploadPanel" class="cv-upload-panel hidden">
+          <input type="file" id="cvFileInput" class="field-input" accept=".pdf,.doc,.docx">
+          <button type="button" class="btn-primary" onclick="uploadOptionalCv()">Upload CV</button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="resetForm()">Submit Another</button>
+    </div>
+  </div>
+
+  <!-- MASTER SHEET VIEW (Hidden, Admin Only) -->
+  <div id="view-sheet" class="hidden">
+    <div class="bg-white p-4 rounded-lg shadow border mb-4">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="font-black text-blue-800 uppercase text-xs tracking-widest">📊 Master Data Repository</h2>
+        <div class="flex gap-2">
+          <button onclick="loadSheetData()" class="bg-blue-600 text-white text-[10px] px-3 py-1 rounded font-bold">🔄 Refresh</button>
+          <button onclick="exportSheetData()" class="bg-emerald-600 text-white text-[10px] px-3 py-1 rounded font-bold">📥 Export CSV</button>
+        </div>
+      </div>
+      <div class="sheet-container">
+        <table class="sheet-table" id="masterSheet">
+          <thead id="sheetHead"></thead>
+          <tbody id="sheetBody"><tr><td colspan="25" class="text-center py-6 text-slate-500">Click "Refresh" to load data from Google Sheets</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>Powered by HAPPY Program • Data Collection Tool v2.0</p>
+  <p>Developed by: <strong>Murphy Richards</strong> - MERL Manager</p>
+</footer>
+
+<!-- Admin Login Modal -->
+<div id="adminModal" class="admin-modal hidden">
+  <div class="admin-box">
+    <div class="admin-lock-icon">🔐</div>
+    <h3>Admin Access</h3>
+    <p class="text-xs text-slate-600 mb-2">Enter password to unlock the Master Sheet</p>
+    <div class="password-field">
+      <span class="password-lock" aria-hidden="true">⌔</span>
+      <input type="password" id="adminPassword" placeholder="Enter admin password">
+      <button type="button" id="toggleAdminPassword" class="password-toggle" onclick="toggleAdminPassword()" aria-label="Show password" title="Show password">
+        <svg id="adminPasswordEye" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button onclick="verifyAdmin()" class="btn-primary" style="padding:0.625rem">Unlock</button>
+      <button onclick="closeAdminLogin()" class="btn-secondary" style="padding:0.625rem">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Participant Edit Notice Modal -->
+<div id="editNoticeModal" class="admin-modal hidden">
+  <div class="admin-box">
+    <div class="admin-lock-icon">i</div>
+    <h3>Profile Editing Notice</h3>
+    <p class="text-xs text-slate-600 mb-2">You can update your participant information at any time. Capacity building and job placement sections can only be edited before they are submitted. Once a section is submitted, only staff/admins can make changes.</p>
+    <button type="button" onclick="closeEditNotice()" class="btn-primary" style="padding:0.625rem">I Understand</button>
+  </div>
+</div>
+
+<!-- Locked Section Modal -->
+<div id="lockedSectionModal" class="admin-modal hidden">
+  <div class="admin-box">
+    <div class="admin-lock-icon">🔒</div>
+    <h3>Section Locked</h3>
+    <p class="text-xs text-slate-600 mb-2"><span id="lockedSectionName">This section</span> has already been submitted and can no longer be edited by participants. Please contact staff if a correction is needed.</p>
+    <div class="btn-group">
+      <button type="button" onclick="closeLockedSectionDialog()" class="btn-primary" style="padding:0.625rem">OK</button>
+      <button type="button" onclick="contactStaffForCorrection()" class="btn-secondary" style="padding:0.625rem">Contact Staff</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast hidden">
+  <span id="toastMessage"></span>
+</div>
+
+<!-- ✅ JAVASCRIPT LOGIC -->
+<script src="js/app.js?v=20260507-merged-consent-registration"></script>
 </body>
 </html>
+
