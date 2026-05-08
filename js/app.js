@@ -1,6 +1,6 @@
 ﻿// ===== CONFIGURATION =====
 const CONFIG = {
-  API_ENDPOINT: 'https://script.google.com/macros/s/AKfycbwmdFeGkuKQWJURON7tgvABk4z1uopV3CjL2LwsKzYvO2xdZ7a3pT_1PyHw4zxi4eLJ/exec',
+  API_ENDPOINT: 'https://script.google.com/macros/s/AKfycbwAnymRCItipYfY66c96mrSRdJE_r2x84J7caU3LmdxRcUgUgmQTOOAe7jdbxm1UgJB/exec',
   CV_TEMPLATE_FOLDER_URL: 'https://drive.google.com/drive/folders/1Pybxl_uIF0v-gSewDlSntp5QXpvnfUfO',
   MAX_CV_UPLOAD_BYTES: 5 * 1024 * 1024,
   QUEUE_KEY: 'happy_pending_submissions',
