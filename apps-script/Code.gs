@@ -6,6 +6,7 @@ const CV_RESULTS_SHEET_NAME = 'CV_Parse_Results';
 const JSON_MIME = ContentService.MimeType.JSON;
 const PARTICIPANT_PREFIX = 'HAPPY-2026-';
 const CV_UPLOAD_FOLDER_ID = '1WEqqBy9AvnzMAkd6dJBXeaO_IqnO1bSc';
+const BACKEND_VERSION = '2026-05-08-consent-email';
 
 const LIFECYCLE_HEADERS = [
   'participantId', 'legacyParticipantId', 'continuationTokenHash',
@@ -110,7 +111,7 @@ function doGet(e) {
     } else if (params.action === 'getSheetData') {
       result = getProtectedSheetData(params.adminPassword, params.sheetName);
     } else {
-      result = { status: 'OK', message: 'HAPPY lifecycle backend is running.' };
+      result = { status: 'OK', message: 'HAPPY lifecycle backend is running.', version: BACKEND_VERSION };
     }
 
     return callback ? javascriptResponse(callback, result) : jsonResponse(result);
@@ -808,6 +809,18 @@ function authorizeDriveAccess() {
   );
   testFile.setTrashed(true);
   return `Drive write access OK: ${folder.getName()}`;
+}
+
+function authorizeEmailAccess() {
+  const userEmail = Session.getActiveUser().getEmail() || Session.getEffectiveUser().getEmail();
+  if (!userEmail) return 'Email authorization check completed. Active user email was not available.';
+  MailApp.sendEmail({
+    to: userEmail,
+    subject: 'HAPPY Program email authorization test',
+    body: 'This confirms the HAPPY Apps Script project is authorized to send participant ID emails.',
+    name: 'HAPPY Program'
+  });
+  return `Email send access OK. Test email sent to ${userEmail}`;
 }
 
 function jsonResponse(payload) {
