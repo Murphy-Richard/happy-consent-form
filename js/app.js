@@ -386,7 +386,8 @@ async function handleConsentSubmit(event) {
       email: document.getElementById('consentEmail').value.trim(),
       consentGiven: true,
       timestamp: new Date().toISOString(),
-      signature: canvas.toDataURL('image/png')
+      signature: canvas.toDataURL('image/png'),
+      appUrl: window.location.href.split('#')[0].split('?')[0]
     };
     const result = await apiAction('initConsent', payload);
     formState.token = result.token || '';

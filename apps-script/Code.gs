@@ -11,6 +11,7 @@ const LIFECYCLE_HEADERS = [
   'participantId', 'legacyParticipantId', 'continuationTokenHash',
   'continuationTokenCreatedAt', 'consentStatus', 'consentSubmittedAt',
   'consentSubmissionId', 'consentName', 'consentPhone', 'consentEmail',
+  'consentEmailSent', 'consentEmailSentAt', 'consentEmailSendError',
   'consentVenue', 'participantInfoStatus', 'capacityBuildingStatus',
   'jobPlacementStatus', 'currentStage', 'lockedSections', 'cvStatus',
   'cvUploadedAt', 'cvFileUrl', 'cvFileId', 'cvParserCandidateId', 'cvParsedAt',
@@ -129,6 +130,7 @@ function initConsent(payload) {
   const now = new Date().toISOString();
   const rawToken = createToken();
   const tokenHash = hashValue(rawToken);
+  const registrationUrl = buildRegistrationUrl(rawToken, payload.appUrl);
   const phone = normalizePhone(payload.phone);
   const email = normalizeEmail(payload.email);
   let rowIndex = findParticipantRow(sheet, headers, {
@@ -200,12 +202,37 @@ function initConsent(payload) {
     notes: payload.venue || ''
   });
 
+  const emailResult = sendConsentParticipantEmail({
+    participantId,
+    token: rawToken,
+    registrationUrl,
+    name: payload.name || '',
+    email
+  });
+  updateRow(sheet, headers, rowIndex, {
+    consentEmailSent: emailResult.sent ? 'yes' : (email ? 'no' : ''),
+    consentEmailSentAt: emailResult.sent ? new Date().toISOString() : '',
+    consentEmailSendError: emailResult.error || ''
+  });
+  if (emailResult.sent || emailResult.error) {
+    appendAudit({
+      participantId,
+      actorType: 'system',
+      actor: 'apps-script',
+      action: emailResult.sent ? 'sendConsentEmail' : 'sendConsentEmailFailed',
+      section: 'consent',
+      source: 'apps-script',
+      notes: emailResult.sent ? email : emailResult.error
+    });
+  }
+
   return {
     status: 'OK',
     participantId,
     token: rawToken,
     row: rowIndex,
-    registrationUrl: buildRegistrationUrl(rawToken)
+    registrationUrl,
+    emailSent: emailResult.sent
   };
 }
 
@@ -730,9 +757,43 @@ function hashValue(value) {
   }).join('');
 }
 
-function buildRegistrationUrl(token) {
+function sendConsentParticipantEmail(details) {
+  if (!details.email) return { sent: false, error: '' };
+
+  try {
+    const name = details.name ? ` ${details.name}` : '';
+    const subject = 'Your HAPPY Program Participant ID';
+    const body = [
+      `Hello${name},`,
+      '',
+      'Thank you for completing your consent for the HAPPY Program.',
+      '',
+      'Your Participant ID is:',
+      details.participantId,
+      '',
+      'Please keep this ID safe. You will use it to continue your registration, update participant information, upload a CV, or continue to capacity building/job placement.',
+      '',
+      `Continuation link: ${details.registrationUrl}`,
+      '',
+      'Regards,',
+      'HAPPY Program Team'
+    ].join('\n');
+
+    MailApp.sendEmail({
+      to: details.email,
+      subject,
+      body,
+      name: 'HAPPY Program'
+    });
+    return { sent: true, error: '' };
+  } catch (err) {
+    return { sent: false, error: err.message };
+  }
+}
+
+function buildRegistrationUrl(token, fallbackBase) {
   const configured = PropertiesService.getScriptProperties().getProperty('REGISTRATION_URL');
-  const base = configured || '../happy-kollekt/index.html';
+  const base = configured || fallbackBase || '../happy-kollekt/index.html';
   return `${base}${base.indexOf('?') >= 0 ? '&' : '?'}token=${encodeURIComponent(token)}`;
 }
 
