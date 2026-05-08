@@ -52,7 +52,8 @@ const CONFIG = {
 // ===== STATE =====
 let formState = {
   collectorName: '', deviceId: '', regionCounter: {}, globalSequence: 0, isSubmitting: false, isSyncing: false, isAdmin: false, adminPassword: '',
-  token: '', participant: null, lockedSections: new Set(), entryMode: '', selectedContinuationStage: '', consentSigned: false, consentDrawing: false, consentContext: null
+  token: '', participant: null, lockedSections: new Set(), entryMode: '', selectedContinuationStage: '', consentSigned: false, consentDrawing: false, consentContext: null,
+  pendingAdminView: 'sheet'
 };
 
 // ===== INITIALIZATION =====
@@ -113,8 +114,10 @@ function setupEventListeners() {
 function setView(view) {
   document.getElementById('view-form').classList.toggle('hidden', view !== 'form');
   document.getElementById('view-sheet').classList.toggle('hidden', view !== 'sheet');
+  document.getElementById('view-report')?.classList.toggle('hidden', view !== 'report');
   document.getElementById('tab-form').classList.toggle('active', view === 'form');
   document.getElementById('tab-sheet').classList.toggle('active', view === 'sheet');
+  document.getElementById('tab-report')?.classList.toggle('active', view === 'report');
 }
 
 async function initializeContinuation() {
@@ -280,8 +283,18 @@ function setupConsentCanvas() {
   const rect = canvas.getBoundingClientRect();
   if (!rect.width) return;
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
+  const nextWidth = Math.round(rect.width * dpr);
+  const nextHeight = Math.round(rect.height * dpr);
+  if (canvas.width === nextWidth && canvas.height === nextHeight && formState.consentContext) {
+    return;
+  }
+
+  const previousSignature = formState.consentSigned && canvas.width && canvas.height
+    ? canvas.toDataURL('image/png')
+    : '';
+
+  canvas.width = nextWidth;
+  canvas.height = nextHeight;
   const ctx = canvas.getContext('2d');
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.lineWidth = 2.5;
@@ -289,6 +302,12 @@ function setupConsentCanvas() {
   ctx.lineJoin = 'round';
   ctx.strokeStyle = '#111827';
   formState.consentContext = ctx;
+
+  if (previousSignature) {
+    const image = new Image();
+    image.onload = () => ctx.drawImage(image, 0, 0, rect.width, rect.height);
+    image.src = previousSignature;
+  }
 }
 
 function getConsentPoint(event) {
@@ -521,7 +540,13 @@ function markLockedSection(sectionId, locked, sectionName) {
 }
 
 // ===== ADMIN LOGIN =====
-function showAdminLogin() {
+function showAdminLogin(targetView = 'sheet') {
+  formState.pendingAdminView = targetView === 'report' ? 'report' : 'sheet';
+  if (formState.isAdmin) {
+    setView(formState.pendingAdminView);
+    if (formState.pendingAdminView === 'sheet') loadSheetData();
+    return;
+  }
   document.getElementById('adminModal').classList.remove('hidden');
   const password = document.getElementById('adminPassword');
   const toggle = document.getElementById('toggleAdminPassword');
@@ -563,7 +588,7 @@ async function verifyAdmin() {
     closeAdminLogin();
     showToast('✅ Admin access granted', 'success');
     renderSheet(data);
-    setView('sheet');
+    setView(formState.pendingAdminView || 'sheet');
   } catch (err) {
     showToast(`❌ ${err.message}`, 'error');
   }

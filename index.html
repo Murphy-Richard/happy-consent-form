@@ -28,7 +28,8 @@
     </div>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="setView('form')" id="tab-form">📝 Entry Form</button>
-      <button class="nav-tab" onclick="showAdminLogin()" id="tab-sheet">📊 Master Sheet</button>
+      <button class="nav-tab" onclick="showAdminLogin('sheet')" id="tab-sheet">📊 Master Sheet</button>
+      <button class="nav-tab" onclick="showAdminLogin('report')" id="tab-report">📈 Report Dashboard</button>
     </div>
   </div>
 
@@ -849,6 +850,31 @@
           <tbody id="sheetBody"><tr><td colspan="25" class="text-center py-6 text-slate-500">Click "Refresh" to load data from Google Sheets</td></tr></tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <!-- REPORT DASHBOARD VIEW (Hidden, Admin Only) -->
+  <div id="view-report" class="hidden">
+    <div class="report-dashboard-shell">
+      <div class="report-dashboard-header">
+        <div>
+          <h2>Report Dashboard</h2>
+          <p>Live Looker Studio dashboard connected to the Master Sheet.</p>
+        </div>
+        <a
+          class="report-open-link"
+          href="https://datastudio.google.com/embed/reporting/52f73fa2-60fb-4d3f-af50-47b53c2242ed/page/uUWxF"
+          target="_blank"
+          rel="noopener"
+        >Open Full Screen</a>
+      </div>
+      <iframe
+        class="looker-report-frame"
+        src="https://datastudio.google.com/embed/reporting/52f73fa2-60fb-4d3f-af50-47b53c2242ed/page/uUWxF"
+        frameborder="0"
+        allowfullscreen
+        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+      </iframe>
     </div>
   </div>
 

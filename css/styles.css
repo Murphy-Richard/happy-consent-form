@@ -141,6 +141,14 @@ body { background-color: #f8fafc; color: #1e293b; line-height: 1.5; }
 .sheet-table th { background: #1e40af; color: white; padding: 0.5rem; position: sticky; top: 0; z-index: 10; border: 1px solid #1e3a8a; font-weight: 700; text-align: left; }
 .sheet-table td { padding: 0.5rem; border: 1px solid #e2e8f0; white-space: nowrap; }
 .sheet-controls { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+/* ===== REPORT DASHBOARD VIEW ===== */
+.report-dashboard-shell { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0.75rem; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); overflow: hidden; }
+.report-dashboard-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+.report-dashboard-header h2 { font-size: 0.9rem; font-weight: 900; color: #1e40af; text-transform: uppercase; letter-spacing: 0.08em; margin: 0; }
+.report-dashboard-header p { font-size: 0.75rem; color: #64748b; margin: 0.25rem 0 0; }
+.report-open-link { display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; background: #1e40af; color: #ffffff; font-size: 0.75rem; font-weight: 800; padding: 0.55rem 0.85rem; border-radius: 0.5rem; text-decoration: none; }
+.report-open-link:hover { background: #1d4ed8; }
+.looker-report-frame { display: block; width: 100%; min-height: 900px; border: 0; background: #f1f5f9; }
 /* ===== ADMIN MODAL ===== */
 .admin-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem; backdrop-filter: blur(4px); }
 .admin-modal.hidden { display: none; }
