@@ -835,6 +835,7 @@ function toggleDisplacementFields() {
 function toggleDisabilityField() {
   const show = document.getElementById('disabilityStatus').value === 'Yes';
   document.getElementById('disabilitySpecField').classList.toggle('hidden', !show);
+  if (!show) document.getElementById('disabilitySpecify').value = '';
 }
 function toggleBaselineEmploymentFields() {
   const status = document.getElementById('employmentStatus').value;
@@ -1245,6 +1246,7 @@ function collectFormData() {
   const modules = Array.from(document.querySelectorAll('input[name="modules"]:checked')).map(cb => cb.value).join(', ');
   const digitalSkills = Array.from(document.querySelectorAll('input[name="digitalSkills"]:checked')).map(cb => cb.value).join(', ');
   const virtualModules = ''; // Placeholder if needed
+  const disabilityStatus = document.getElementById('disabilityStatus').value || 'No';
   
   const formData = {
     // Section A: Meta
@@ -1282,8 +1284,8 @@ function collectFormData() {
     displacementReason: document.getElementById('displacementReason').value,
     originalCommunity: document.getElementById('originalCommunity').value,
     hostCommunity: document.getElementById('hostCommunity').value,
-    disabilityStatus: document.getElementById('disabilityStatus').value,
-    disabilitySpecify: document.getElementById('disabilitySpecify').value,
+    disabilityStatus,
+    disabilitySpecify: disabilityStatus === 'Yes' ? document.getElementById('disabilitySpecify').value : '',
     educationLevel: document.getElementById('educationLevel').value,
     employmentStatus: document.getElementById('employmentStatus').value,
     currentOccupation: document.getElementById('currentOccupation').value,

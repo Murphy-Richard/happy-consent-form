@@ -291,6 +291,7 @@ function saveParticipantInfo(payload, explicitSection) {
   const participantId = existing.participantId || payload.participantId || generateParticipantId(sheet, headers);
   const incoming = pickKnownHeaders(payload, headers);
   enforceSectionScope(incoming, explicitSection);
+  normalizeParticipantInfoDefaults(incoming, explicitSection);
   const blockedSections = enforceParticipantLocks(existing, incoming);
   const capacityStatus = resolveCapacityStatus(existing, incoming, explicitSection);
   const placementStatus = resolvePlacementStatus(existing, incoming, explicitSection);
@@ -357,6 +358,19 @@ function enforceSectionScope(incoming, explicitSection) {
   }
   removeIncomingFields(incoming, CAPACITY_BUILDING_FIELDS);
   removeIncomingFields(incoming, JOB_PLACEMENT_FIELDS);
+}
+
+function normalizeParticipantInfoDefaults(incoming, explicitSection) {
+  if (explicitSection) return;
+  incoming.disabilityStatus = normalizeYesNo(incoming.disabilityStatus, 'No');
+  if (incoming.disabilityStatus !== 'Yes') incoming.disabilitySpecify = '';
+}
+
+function normalizeYesNo(value, fallback) {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'yes') return 'Yes';
+  if (normalized === 'no') return 'No';
+  return fallback;
 }
 
 function updateCvStatus(payload) {
