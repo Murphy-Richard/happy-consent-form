@@ -64,7 +64,7 @@
       <div class="entry-choice-header">
         <span class="entry-choice-kicker">Participant workflow</span>
         <h2>How do you want to continue?</h2>
-        <p>Select the correct stage so the participant continues on the same record.</p>
+        <p>New candidates complete participant information only. Staff can sign in to update capacity building and job placement.</p>
       </div>
 
       <div id="entryContinuationBox" class="entry-token-box hidden">
@@ -79,15 +79,15 @@
           <strong>New Participant</strong>
           <small>Start or complete participant information after consent.</small>
         </button>
-        <button type="button" class="entry-choice-card purple" onclick="continueToStage('capacity')">
+        <button type="button" class="entry-choice-card purple admin-workflow-card hidden" onclick="continueToStage('capacity')">
           <span class="entry-choice-icon">2</span>
           <strong>Continue to Capacity Building</strong>
-          <small>Load the existing participant and open the training section.</small>
+          <small>Staff only. Load the existing participant and open the training section.</small>
         </button>
-        <button type="button" class="entry-choice-card green" onclick="continueToStage('placement')">
+        <button type="button" class="entry-choice-card green admin-workflow-card hidden" onclick="continueToStage('placement')">
           <span class="entry-choice-icon">3</span>
           <strong>Continue to Job Placement</strong>
-          <small>Load the existing participant and open the placement section.</small>
+          <small>Staff only. Load the existing participant and open the placement section.</small>
         </button>
       </div>
     </section>
@@ -158,7 +158,7 @@
     <form id="mainForm" class="hidden" onsubmit="handleSubmit(event)" novalidate>
       
       <!-- SECTION A: SUBMISSION META -->
-      <div class="form-section">
+      <div id="submissionSection" class="form-section admin-only-section hidden">
         <div class="section-header">
           <h2 class="section-title"><span class="section-badge">A</span> Submission Information</h2>
           <span id="subIdDisplay" class="text-[10px] font-mono text-slate-400 bg-slate-50 px-2 py-0.5 rounded">SUB-AUTO</span>
@@ -489,7 +489,7 @@
       </div>
 
       <!-- SECTION C: CAPACITY BUILDING -->
-      <div class="form-section purple">
+      <div id="capacitySection" class="form-section purple admin-only-section hidden">
         <h2 class="section-title"><span class="section-badge purple">C</span> Capacity Building</h2>
         
         <div class="conditional-trigger purple">
@@ -624,7 +624,7 @@
       </div>
 
       <!-- SECTION D: JOB PLACEMENT -->
-      <div class="form-section green">
+      <div id="placementSection" class="form-section green admin-only-section hidden">
         <h2 class="section-title"><span class="section-badge green">D</span> Job Placement</h2>
         
         <div class="conditional-trigger green">

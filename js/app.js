@@ -53,8 +53,34 @@ const CONFIG = {
 let formState = {
   collectorName: '', deviceId: '', regionCounter: {}, globalSequence: 0, isSubmitting: false, isSyncing: false, isAdmin: false, adminPassword: '',
   token: '', participant: null, lockedSections: new Set(), entryMode: '', selectedContinuationStage: '', consentSigned: false, consentDrawing: false, consentContext: null,
-  pendingAdminView: 'sheet'
+  pendingAdminView: 'sheet', pendingAdminContinuationStage: ''
 };
+
+const CAPACITY_FIELD_IDS = [
+  'trainingStartDate', 'trainingEndDate', 'trainingLocation', 'trainingMode',
+  'virtualPlatform', 'trainerType', 'trainingPartner', 'completionStatus',
+  'certificateIssued', 'wishTraining', 'previousTrainings', 'previousTrainingDesc'
+];
+
+const PLACEMENT_FIELD_IDS = [
+  'placementStartDate', 'placementRegion', 'placementDistrict', 'placementCommunity',
+  'plSector', 'plIndustry', 'plJobType', 'plJobRole', 'employmentType',
+  'employmentCategory', 'placementIncome', 'placementIncomeFreq', 'employerName',
+  'contractType', 'workHours', 'currentlyEmployed', 'currentEmployer',
+  'currentJobRoleAlt', 'currentIncomeAlt'
+];
+
+const ADMIN_SECTION_PAYLOAD_KEYS = [
+  'trainedByPartner', 'trainingStartDate', 'trainingEndDate', 'trainingLocation',
+  'trainingMode', 'virtualPlatform', 'trainerType', 'trainingPartner',
+  'completionStatus', 'certificateIssued', 'modules', 'digitalSkills',
+  'wishTraining', 'previousTrainings', 'previousTrainingDesc',
+  'placedByPartner', 'placementStartDate', 'placementRegion', 'placementDistrict',
+  'placementCommunity', 'plSector', 'plIndustry', 'plJobType', 'plJobRole',
+  'employmentType', 'employmentCategory', 'placementIncome', 'placementIncomeFreq',
+  'employerName', 'contractType', 'workHours', 'currentlyEmployed',
+  'currentEmployer', 'currentJobRoleAlt', 'currentIncomeAlt'
+];
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -83,6 +109,7 @@ function initializeForm() {
   toggleBaselineEmploymentFields();
   toggleCapacityFields(document.querySelector('input[name="tr_check"]:checked')?.value === 'Yes');
   togglePlacementFields(document.querySelector('input[name="pl_check"]:checked')?.value === 'Yes');
+  applyWorkflowMode();
   initializeContinuation();
 }
 
@@ -189,6 +216,7 @@ function extractContinuationToken(value) {
 function revealParticipantForm() {
   document.getElementById('entryChoiceScreen')?.classList.add('hidden');
   document.getElementById('mainForm')?.classList.remove('hidden');
+  applyWorkflowMode();
 }
 
 async function startNewParticipant() {
@@ -199,6 +227,13 @@ async function startNewParticipant() {
 }
 
 async function continueToStage(stage) {
+  if (!formState.isAdmin) {
+    formState.pendingAdminContinuationStage = stage;
+    showToast('Admin access is required for capacity building and job placement.', 'error');
+    showAdminLogin('form');
+    return;
+  }
+
   if (formState.selectedContinuationStage !== stage || document.getElementById('entryContinuationBox')?.classList.contains('hidden')) {
     showContinuationInput(stage);
     return;
@@ -239,6 +274,7 @@ async function submitSelectedContinuation() {
       await loadParticipantById(participantId);
     }
     revealParticipantForm();
+    applyWorkflowMode();
     showEditNotice();
     openStageSection(stage);
   } catch (err) {
@@ -258,6 +294,46 @@ function backToEntryChoice() {
   document.getElementById('consentStep')?.classList.add('hidden');
   document.getElementById('mainForm')?.classList.add('hidden');
   document.getElementById('entryChoiceScreen')?.classList.remove('hidden');
+  applyWorkflowMode();
+}
+
+function applyWorkflowMode() {
+  const adminMode = formState.isAdmin;
+  const capacityActive = adminMode && formState.entryMode === 'capacity';
+  const placementActive = adminMode && formState.entryMode === 'placement';
+
+  document.querySelectorAll('.admin-workflow-card').forEach(card => {
+    card.classList.toggle('hidden', !adminMode);
+  });
+
+  document.getElementById('submissionSection')?.classList.toggle('hidden', !adminMode);
+  document.getElementById('capacitySection')?.classList.toggle('hidden', !capacityActive);
+  document.getElementById('placementSection')?.classList.toggle('hidden', !placementActive);
+
+  setSectionControlsDisabled('submissionSection', !adminMode);
+  setSectionControlsDisabled('capacitySection', !capacityActive);
+  setSectionControlsDisabled('placementSection', !placementActive);
+  setAdminSectionFieldsRequired('capacity', capacityActive);
+  setAdminSectionFieldsRequired('placement', placementActive);
+
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.textContent = capacityActive
+      ? 'Submit Capacity Building'
+      : placementActive
+        ? 'Submit Job Placement'
+        : 'Submit Participant Information';
+  }
+}
+
+function setAdminSectionFieldsRequired(section, required) {
+  const ids = section === 'capacity' ? CAPACITY_FIELD_IDS : PLACEMENT_FIELD_IDS;
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (required) el.setAttribute('required', 'required');
+    else el.removeAttribute('required');
+  });
 }
 
 function initializeConsentStep() {
@@ -589,6 +665,15 @@ async function verifyAdmin() {
     closeAdminLogin();
     showToast('✅ Admin access granted', 'success');
     renderSheet(data);
+    applyWorkflowMode();
+    if (formState.pendingAdminContinuationStage) {
+      const stage = formState.pendingAdminContinuationStage;
+      formState.pendingAdminContinuationStage = '';
+      formState.pendingAdminView = 'form';
+      setView('form');
+      continueToStage(stage);
+      return;
+    }
     setView(formState.pendingAdminView || 'sheet');
   } catch (err) {
     showToast(`❌ ${err.message}`, 'error');
@@ -942,7 +1027,12 @@ function queueSubmission(formData, reason = '') {
 }
 
 async function postSubmission(formData) {
-  return apiAction('saveParticipantInfo', formData);
+  const action = formState.entryMode === 'capacity'
+    ? 'submitCapacityBuilding'
+    : formState.entryMode === 'placement'
+      ? 'submitJobPlacement'
+      : 'saveParticipantInfo';
+  return apiAction(action, formData);
 }
 
 async function apiAction(action, data = {}) {
@@ -1156,7 +1246,7 @@ function collectFormData() {
   const digitalSkills = Array.from(document.querySelectorAll('input[name="digitalSkills"]:checked')).map(cb => cb.value).join(', ');
   const virtualModules = ''; // Placeholder if needed
   
-  return {
+  const formData = {
     // Section A: Meta
     submissionId: document.getElementById('submissionId').value,
     participantId: document.getElementById('participantId').value || (formState.token ? '' : generateParticipantId()),
@@ -1246,6 +1336,16 @@ function collectFormData() {
     currentJobRoleAlt: document.getElementById('currentJobRoleAlt').value,
     currentIncomeAlt: document.getElementById('currentIncomeAlt').value
   };
+
+  if (formState.entryMode === 'capacity' || formState.entryMode === 'placement') {
+    formData.adminPassword = formState.adminPassword;
+    formData.actorType = 'admin';
+    formData.actor = formState.collectorName || 'admin';
+  } else {
+    ADMIN_SECTION_PAYLOAD_KEYS.forEach(key => delete formData[key]);
+  }
+
+  return formData;
 }
 
 function generateParticipantId() {
@@ -1277,6 +1377,7 @@ function resetForm() {
   document.querySelectorAll('input[name="pl_check"]').forEach(r => r.checked = r.value === 'No');
   toggleCapacityFields(false);
   togglePlacementFields(false);
+  applyWorkflowMode();
   // Reset dates
   document.getElementById('onboardingDate').valueAsDate = new Date();
   handleIdTypeChange();

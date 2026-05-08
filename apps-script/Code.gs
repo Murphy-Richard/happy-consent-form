@@ -262,6 +262,13 @@ function getParticipantById(participantId) {
 }
 
 function saveParticipantInfo(payload, explicitSection) {
+  if (explicitSection === 'capacity' || explicitSection === 'placement') {
+    const adminPassword = getAdminPassword();
+    if (!adminPassword || payload.adminPassword !== adminPassword) {
+      throw new Error('Admin access is required for capacity building and job placement updates.');
+    }
+  }
+
   const sheet = getMasterSheet();
   const headers = ensureHeaders(sheet, MASTER_HEADERS);
   const now = new Date().toISOString();
@@ -283,6 +290,7 @@ function saveParticipantInfo(payload, explicitSection) {
   const existing = isNew ? {} : rowToObject(headers, sheet.getRange(rowIndex, 1, 1, headers.length).getValues()[0]);
   const participantId = existing.participantId || payload.participantId || generateParticipantId(sheet, headers);
   const incoming = pickKnownHeaders(payload, headers);
+  enforceSectionScope(incoming, explicitSection);
   const blockedSections = enforceParticipantLocks(existing, incoming);
   const capacityStatus = resolveCapacityStatus(existing, incoming, explicitSection);
   const placementStatus = resolvePlacementStatus(existing, incoming, explicitSection);
@@ -336,6 +344,19 @@ function saveParticipantInfo(payload, explicitSection) {
     lockedSections,
     blockedSections
   };
+}
+
+function enforceSectionScope(incoming, explicitSection) {
+  if (explicitSection === 'capacity') {
+    removeIncomingFields(incoming, JOB_PLACEMENT_FIELDS);
+    return;
+  }
+  if (explicitSection === 'placement') {
+    removeIncomingFields(incoming, CAPACITY_BUILDING_FIELDS);
+    return;
+  }
+  removeIncomingFields(incoming, CAPACITY_BUILDING_FIELDS);
+  removeIncomingFields(incoming, JOB_PLACEMENT_FIELDS);
 }
 
 function updateCvStatus(payload) {
